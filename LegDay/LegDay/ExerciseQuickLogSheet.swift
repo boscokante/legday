@@ -1,99 +1,278 @@
 import SwiftUI
 
-struct SetData: Identifiable, Equatable {
+struct SetData: Identifiable, Equatable, Codable {
     let id = UUID()
     var weight: Double
     var reps: Int
     var warmup: Bool
 }
 
-struct ExerciseQuickLogSheet: View {
+struct ExerciseSessionSheet: View {
     let exerciseName: String
-    @State private var sets: [SetData] = []
+    @ObservedObject var dailyWorkout: DailyWorkoutSession
     @Environment(\.dismiss) private var dismiss
-    @State private var showingSaveConfirmation = false
+    
+    @ObservedObject private var timerManager = TimerManager.shared
+    
+    var sets: [SetData] {
+        dailyWorkout.getSets(for: exerciseName)
+    }
 
     var body: some View {
         NavigationStack {
             List {
+                // Rest Timer Section
+                Section("Rest Timers") {
+                    HStack(spacing: 16) {
+                        // 2 Minute Timer
+                        VStack {
+                            Button(action: {
+                                if timerManager.timer2min.isActive {
+                                    timerManager.timer2min.stop()
+                                } else {
+                                    timerManager.timer2min.start()
+                                }
+                            }) {
+                                VStack {
+                                    Text("2 MIN")
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                    Text(timerManager.timer2min.formattedTime)
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                }
+                                .foregroundColor(timerManager.timer2min.isActive ? .white : .blue)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(timerManager.timer2min.isActive ? .blue : .blue.opacity(0.1))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(.blue, lineWidth: 1)
+                                        )
+                                )
+                            }
+                            .buttonStyle(.plain)
+                            
+                            if timerManager.timer2min.isActive {
+                                ProgressView(value: timerManager.timer2min.progress)
+                                    .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                                    .frame(height: 4)
+                            }
+                        }
+                        
+                        // 45 Second Timer
+                        VStack {
+                            Button(action: {
+                                if timerManager.timer45sec.isActive {
+                                    timerManager.timer45sec.stop()
+                                } else {
+                                    timerManager.timer45sec.start()
+                                }
+                            }) {
+                                VStack {
+                                    Text("45 SEC")
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                    Text(timerManager.timer45sec.formattedTime)
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                }
+                                .foregroundColor(timerManager.timer45sec.isActive ? .white : .orange)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(timerManager.timer45sec.isActive ? .orange : .orange.opacity(0.1))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(.orange, lineWidth: 1)
+                                        )
+                                )
+                            }
+                            .buttonStyle(.plain)
+                            
+                            if timerManager.timer45sec.isActive {
+                                ProgressView(value: timerManager.timer45sec.progress)
+                                    .progressViewStyle(LinearProgressViewStyle(tint: .orange))
+                                    .frame(height: 4)
+                            }
+                        }
+                    }
+                }
+                
                 ForEach(0..<sets.count, id: \.self) { index in
-                    SetRowView(set: $sets[index], index: index)
+                    EditableSetRowView(
+                        exerciseName: exerciseName,
+                        setIndex: index,
+                        dailyWorkout: dailyWorkout
+                    )
                 }
                 .onDelete(perform: deleteSets)
                 
                 Button("+ Set") {
-                    sets.append(SetData(weight: 0, reps: 10, warmup: false))
+                    let newSet = SetData(weight: 0, reps: 10, warmup: false)
+                    dailyWorkout.addSet(to: exerciseName, set: newSet)
                 }
+                
                 Button("Warmup Preset (10×0)") {
-                    sets.append(SetData(weight: 0, reps: 10, warmup: true))
+                    let warmupSet = SetData(weight: 0, reps: 10, warmup: true)
+                    dailyWorkout.addSet(to: exerciseName, set: warmupSet)
+                }
+                
+                Section("Today's Progress") {
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Sets for \(exerciseName):")
+                                .font(.headline)
+                            Spacer()
+                            Text("\(sets.count) sets")
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                        if !sets.isEmpty {
+                            ForEach(0..<sets.count, id: \.self) { index in
+                                let set = sets[index]
+                                HStack {
+                                    Text("Set \(index + 1):")
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                    
+                                    if set.weight > 0 && set.reps > 0 {
+                                        Text("\(set.weight, specifier: "%.0f") lbs × \(set.reps) reps")
+                                            .font(.subheadline)
+                                    } else {
+                                        Text("Not completed")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                            .italic()
+                                    }
+                                    
+                                    if set.warmup {
+                                        Text("(Warmup)")
+                                            .font(.caption)
+                                            .foregroundStyle(.orange)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    if set.weight > 0 && set.reps > 0 {
+                                        let setVolume = set.weight * Double(set.reps)
+                                        Text("\(setVolume, specifier: "%.0f") vol")
+                                            .font(.caption)
+                                            .foregroundStyle(.blue)
+                                    }
+                                }
+                                .padding(.leading, 8)
+                            }
+                            
+                            Divider()
+                            
+                            let totalVolume = sets.reduce(0.0) { total, set in
+                                total + (set.weight * Double(set.reps))
+                            }
+                            
+                            HStack {
+                                Text("Total Volume:")
+                                    .font(.headline)
+                                Spacer()
+                                Text("\(totalVolume, specifier: "%.0f") lbs")
+                                    .font(.headline)
+                                    .foregroundStyle(.blue)
+                            }
+                            .padding(.top, 4)
+                        }
+                        
+                        Divider()
+                        
+                        HStack {
+                            Text("Total sets today:")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            Text("\(dailyWorkout.getTotalSets())")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 4)
                 }
             }
             .navigationTitle(exerciseName)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { 
-                        saveWorkout()
-                    }
-                    .disabled(sets.isEmpty)
-                }
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") { dismiss() }
+                    Button("Done") { dismiss() }
                 }
             }
-            .alert("Workout Saved!", isPresented: $showingSaveConfirmation) {
-                Button("OK") { 
-                    dismiss() 
-                }
-            } message: {
-                Text("Your \(exerciseName) workout has been saved with \(sets.count) sets.")
-            }
-        }
-    }
-    
-    private func saveWorkout() {
-        // For now, we'll save to UserDefaults and print to console
-        // Later we can integrate with Core Data when the entities are working
-        
-        let workoutData: [String: Any] = [
-            "exerciseName": exerciseName,
-            "date": Date().timeIntervalSince1970,
-            "sets": sets.map { set in
-                [
-                    "weight": set.weight,
-                    "reps": set.reps,
-                    "warmup": set.warmup
-                ]
-            }
-        ]
-        
-        // Save to UserDefaults for persistence
-        var savedWorkouts = UserDefaults.standard.array(forKey: "savedWorkouts") as? [[String: Any]] ?? []
-        savedWorkouts.append(workoutData)
-        UserDefaults.standard.set(savedWorkouts, forKey: "savedWorkouts")
-        
-        // Print workout summary
-        print("=== WORKOUT SAVED ===")
-        print("Exercise: \(exerciseName)")
-        print("Date: \(Date())")
-        print("Sets:")
-        for (index, set) in sets.enumerated() {
-            let warmupText = set.warmup ? " (Warmup)" : ""
-            print("  Set \(index + 1): \(set.weight) lbs × \(set.reps) reps\(warmupText)")
-        }
-        print("Total Volume: \(totalVolume()) lbs")
-        print("=====================")
-        
-        showingSaveConfirmation = true
-    }
-    
-    private func totalVolume() -> Double {
-        sets.reduce(0) { total, set in
-            total + (set.weight * Double(set.reps))
         }
     }
     
     private func deleteSets(offsets: IndexSet) {
-        sets.remove(atOffsets: offsets)
+        for index in offsets {
+            dailyWorkout.removeSet(from: exerciseName, at: index)
+        }
+    }
+}
+
+struct EditableSetRowView: View {
+    let exerciseName: String
+    let setIndex: Int
+    @ObservedObject var dailyWorkout: DailyWorkoutSession
+    
+    @State private var weight: Double = 0
+    @State private var reps: Int = 10
+    @State private var isWarmup: Bool = false
+    
+    var body: some View {
+        HStack {
+            Text("#\(setIndex + 1)")
+                .frame(width: 30, alignment: .leading)
+            
+            TextField("Weight", value: $weight, format: .number)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .onChange(of: weight) { _, newValue in
+                    updateSet()
+                }
+            
+            Text("×")
+                .foregroundStyle(.secondary)
+            
+            TextField("Reps", value: $reps, format: .number)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .onChange(of: reps) { _, newValue in
+                    updateSet()
+                }
+            
+            if isWarmup { 
+                Text("Warmup")
+                    .foregroundStyle(.orange)
+                    .font(.caption)
+            }
+        }
+        .onAppear {
+            loadCurrentValues()
+        }
+    }
+    
+    private func loadCurrentValues() {
+        let sets = dailyWorkout.getSets(for: exerciseName)
+        if setIndex < sets.count {
+            let set = sets[setIndex]
+            weight = set.weight
+            reps = set.reps
+            isWarmup = set.warmup
+        }
+    }
+    
+    private func updateSet() {
+        dailyWorkout.updateSet(
+            exercise: exerciseName,
+            index: setIndex,
+            weight: weight,
+            reps: reps,
+            warmup: isWarmup
+        )
     }
 }
 
@@ -108,26 +287,75 @@ struct SetRowView: View {
             
             TextField("Weight", value: $set.weight, format: .number)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                .keyboardType(.decimalPad)
             
             Text("×")
                 .foregroundStyle(.secondary)
             
             TextField("Reps", value: $set.reps, format: .number)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                .keyboardType(.numberPad)
             
             if set.warmup { 
                 Text("Warmup")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.orange)
                     .font(.caption)
             }
         }
     }
 }
 
-struct ExerciseQuickLogSheet_Previews: PreviewProvider {
+struct SavedWorkoutsView: View {
+    @Environment(\.dismiss) private var dismiss
+    
+    var savedWorkouts: [[String: Any]] {
+        UserDefaults.standard.array(forKey: "savedWorkouts") as? [[String: Any]] ?? []
+    }
+    
+    var body: some View {
+        NavigationStack {
+            List {
+                if savedWorkouts.isEmpty {
+                    Text("No workouts saved yet!")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(0..<savedWorkouts.count, id: \.self) { index in
+                        let workout = savedWorkouts[index]
+                        VStack(alignment: .leading, spacing: 4) {
+                            if let timestamp = workout["date"] as? TimeInterval {
+                                Text(Date(timeIntervalSince1970: timestamp).formatted(date: .abbreviated, time: .shortened))
+                                    .font(.headline)
+                            }
+                            
+                            if let exercises = workout["exercises"] as? [String: [[String: Any]]] {
+                                ForEach(exercises.keys.sorted(), id: \.self) { exercise in
+                                    if let sets = exercises[exercise] {
+                                        Text("\(exercise): \(sets.count) sets")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.vertical, 2)
+                    }
+                }
+            }
+            .navigationTitle("Saved Workouts")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+                ToolbarItem(placement: .destructiveAction) {
+                    Button("Clear All") {
+                        UserDefaults.standard.removeObject(forKey: "savedWorkouts")
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct ExerciseSessionSheet_Previews: PreviewProvider {
     static var previews: some View {
-        ExerciseQuickLogSheet(exerciseName: "Bulgarian Split Squat")
+        ExerciseSessionSheet(exerciseName: "Bulgarian Split Squat", dailyWorkout: DailyWorkoutSession())
     }
 }
