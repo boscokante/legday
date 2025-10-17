@@ -1,0 +1,63 @@
+# Core Data Model Setup Instructions
+
+Please follow these steps to set up the Core Data model for LegDay:
+
+1. In Xcode, right-click on the LegDay folder and select "New File..."
+2. Choose "Data Model" from the Core Data section
+3. Name it "LegDayModel.xcdatamodeld"
+4. Create the following entities with their specified attributes and relationships:
+
+## Entities to Create
+
+### DayTemplate
+- Attributes:
+  - id: UUID (Indexed)
+  - name: String
+  - isDefault: Boolean
+- Relationships:
+  - exercises: To-Many relationship to TemplateExercise (ordered)
+
+### TemplateExercise
+- Attributes:
+  - id: UUID (Indexed)
+  - name: String
+  - defaultWarmupJSON: String (Optional)
+  - defaultWorkingScheme: String (Optional)
+- Relationships:
+  - template: To-One relationship to DayTemplate (Inverse of exercises)
+
+### WorkoutSession
+- Attributes:
+  - id: UUID (Indexed)
+  - date: Date
+  - templateNameSnapshot: String
+- Relationships:
+  - entries: To-Many relationship to ExerciseEntry (ordered)
+
+### ExerciseEntry
+- Attributes:
+  - id: UUID (Indexed)
+  - exerciseNameSnapshot: String
+  - notes: String (Optional)
+- Relationships:
+  - sets: To-Many relationship to SetEntry (ordered)
+  - session: To-One relationship to WorkoutSession (Inverse of entries)
+
+### SetEntry
+- Attributes:
+  - id: UUID (Indexed)
+  - order: Integer 16
+  - weight: Double
+  - reps: Integer 16
+  - rpe: Double (Optional)
+  - isWarmup: Boolean
+
+## Code Generation Settings
+
+For each entity:
+1. Select the entity
+2. In the Data Model Inspector, set:
+   - Codegen: "Class Definition"
+   - Module: "Current Product Module"
+
+After creating the model, Xcode will automatically generate the NSManagedObject subclasses.

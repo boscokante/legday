@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24D81" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="DayTemplate" representedClassName="DayTemplate" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="isDefault" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="exercises" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="TemplateExercise" inverseName="template" inverseEntity="TemplateExercise"/>
+    </entity>
+    <entity name="TemplateExercise" representedClassName="TemplateExercise" syncable="YES" codeGenerationType="class">
+        <attribute name="defaultWarmupJSON" optional="YES" attributeType="String"/>
+        <attribute name="defaultWorkingScheme" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO" spotlightIndexingEnabled="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="template" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DayTemplate" inverseName="exercises" inverseEntity="DayTemplate"/>
+    </entity>
+</model>
