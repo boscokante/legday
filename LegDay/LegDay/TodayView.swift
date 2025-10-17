@@ -212,15 +212,80 @@ class DailyWorkoutSession: ObservableObject {
     }
     
     private func loadTodaysWorkout() {
+        // First try to load today's workout
         if let data = UserDefaults.standard.data(forKey: "workout_\(dateKey)"),
            let decoded = try? JSONDecoder().decode([String: [SetData]].self, from: data) {
             exercises = decoded
+            print("📅 Loaded existing workout for \(dateKey)")
+        } else {
+            // If no workout for today, prefill with previous workout
+            loadPreviousWorkout()
+        }
+    }
+    
+    private func loadPreviousWorkout() {
+        guard let savedWorkouts = UserDefaults.standard.array(forKey: "savedWorkouts") as? [[String: Any]],
+              !savedWorkouts.isEmpty else {
+            print("📭 No previous workouts found")
+            return
+        }
+        
+        // Sort by date (most recent first) and filter out today's workout
+        let sortedWorkouts = savedWorkouts
+            .compactMap { workout -> (date: Date, data: [String: Any])? in
+                guard let timestamp = workout["date"] as? TimeInterval else { return nil }
+                let date = Date(timeIntervalSince1970: timestamp)
+                // Skip if it's today
+                guard !Calendar.current.isDateInToday(date) else { return nil }
+                return (date, workout)
+            }
+            .sorted { $0.date > $1.date }
+        
+        guard let mostRecent = sortedWorkouts.first,
+              let exercisesData = mostRecent.data["exercises"] as? [String: [[String: Any]]] else {
+            print("📭 No valid previous workout to load")
+            return
+        }
+        
+        // Convert the workout data to SetData objects
+        var loadedExercises: [String: [SetData]] = [:]
+        for (exerciseName, setsArray) in exercisesData {
+            let sets = setsArray.compactMap { setDict -> SetData? in
+                guard let weight = setDict["weight"] as? Double,
+                      let reps = setDict["reps"] as? Int,
+                      let warmup = setDict["warmup"] as? Bool else {
+                    return nil
+                }
+                return SetData(weight: weight, reps: reps, warmup: warmup)
+            }
+            if !sets.isEmpty {
+                loadedExercises[exerciseName] = sets
+            }
+        }
+        
+        if !loadedExercises.isEmpty {
+            exercises = loadedExercises
+            // Save as today's starting point
+            saveTodaysWorkout()
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .short
+            print("✅ Prefilled workout from \(dateFormatter.string(from: mostRecent.date)) - \(getTotalSets()) sets loaded")
+        } else {
+            print("📭 Previous workout was empty")
         }
     }
     
     func clearTodaysWorkout() {
         exercises.removeAll()
         UserDefaults.standard.removeObject(forKey: "workout_\(dateKey)")
+    }
+    
+    func loadPreviousWorkoutManually() {
+        // Clear current workout first
+        exercises.removeAll()
+        // Load previous workout
+        loadPreviousWorkout()
     }
 }
 
@@ -347,6 +412,11 @@ struct TodayView: View {
                     .disabled(dailyWorkout.getTotalSets() == 0)
                     .foregroundStyle(dailyWorkout.getTotalSets() > 0 ? .blue : .secondary)
                     
+                    Button("Load Previous Workout") {
+                        dailyWorkout.loadPreviousWorkoutManually()
+                    }
+                    .foregroundStyle(.green)
+                    
                     Button("Clear Today's Workout") {
                         dailyWorkout.clearTodaysWorkout()
                     }
@@ -357,6 +427,9 @@ struct TodayView: View {
                 Section("Debug") {
                     Button("View Saved Workouts") {
                         showingSavedWorkouts = true
+                    }
+                    Button("Export Muscular Leg Icon") {
+                        Task { await IconExporter.exportAll() }
                     }
                 }
             }
