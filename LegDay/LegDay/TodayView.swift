@@ -122,9 +122,19 @@ class TimerManager: ObservableObject {
     }
 }
 
+enum WorkoutDay: String, CaseIterable, Codable {
+    case leg = "Leg Day"
+    case push = "Push Day"
+    case pull = "Pull Day"
+    case core = "Core Day"
+    
+    var displayName: String { rawValue }
+}
+
 // Daily workout session model
 class DailyWorkoutSession: ObservableObject {
     @Published var exercises: [String: [SetData]] = [:]
+    @Published var day: WorkoutDay = .leg
     @Published var notes: String = ""
     private let dateKey: String
     
@@ -179,7 +189,8 @@ class DailyWorkoutSession: ObservableObject {
                     ]
                 }
             },
-            "notes": notes
+            "notes": notes,
+            "day": day.rawValue
         ]
         
         var savedWorkouts = UserDefaults.standard.array(forKey: "savedWorkouts") as? [[String: Any]] ?? []
@@ -212,6 +223,7 @@ class DailyWorkoutSession: ObservableObject {
             UserDefaults.standard.set(encoded, forKey: "workout_\(dateKey)")
         }
         UserDefaults.standard.set(notes, forKey: "workoutNotes_\(dateKey)")
+        UserDefaults.standard.set(day.rawValue, forKey: "workoutDay_\(dateKey)")
     }
     
     private func loadTodaysWorkout() {
@@ -226,6 +238,10 @@ class DailyWorkoutSession: ObservableObject {
         }
         if let savedNotes = UserDefaults.standard.string(forKey: "workoutNotes_\(dateKey)") {
             notes = savedNotes
+        }
+        if let savedDay = UserDefaults.standard.string(forKey: "workoutDay_\(dateKey)"),
+           let parsed = WorkoutDay(rawValue: savedDay) {
+            day = parsed
         }
     }
     
@@ -274,6 +290,9 @@ class DailyWorkoutSession: ObservableObject {
             if let prevNotes = mostRecent.data["notes"] as? String {
                 notes = prevNotes
             }
+            if let prevDay = mostRecent.data["day"] as? String, let parsed = WorkoutDay(rawValue: prevDay) {
+                day = parsed
+            }
             // Save as today's starting point
             saveTodaysWorkout()
             
@@ -290,6 +309,7 @@ class DailyWorkoutSession: ObservableObject {
         notes = ""
         UserDefaults.standard.removeObject(forKey: "workout_\(dateKey)")
         UserDefaults.standard.removeObject(forKey: "workoutNotes_\(dateKey)")
+        UserDefaults.standard.removeObject(forKey: "workoutDay_\(dateKey)")
     }
     
     func loadPreviousWorkoutManually() {
@@ -301,6 +321,12 @@ class DailyWorkoutSession: ObservableObject {
     
     func updateNotes(_ newNotes: String) {
         notes = newNotes
+        saveTodaysWorkout()
+        objectWillChange.send()
+    }
+    
+    func updateDay(_ newDay: WorkoutDay) {
+        day = newDay
         saveTodaysWorkout()
         objectWillChange.send()
     }
@@ -320,15 +346,40 @@ struct TodayView: View {
     @State private var showingSavedWorkouts: Bool = false
     @State private var showingWorkoutSaved: Bool = false
 
-    let exercises = [
-        "Bulgarian Split Squat",
-        "Leg Press", 
-        "Single-Leg Extension",
-        "Hamstring Curl",
-        "Standing Calf Raise",
-        "Seated Calf Raise",
-        "Box Jumps"
-    ]
+    var exercises: [String] {
+        switch dailyWorkout.day {
+        case .leg:
+            return [
+                "Bulgarian Split Squat",
+                "Leg Press",
+                "Single-Leg Extension",
+                "Hamstring Curl",
+                "Standing Calf Raise",
+                "Seated Calf Raise",
+                "Box Jumps"
+            ]
+        case .push:
+            return [
+                "Bench Press",
+                "Incline Bench",
+                "Dips"
+            ]
+        case .pull:
+            return [
+                "Single-Arm Row",
+                "Single-Arm Dumbbell Row",
+                "Pull-Ups",
+                "Lat Pulldown",
+                "Dumbbell Curls"
+            ]
+        case .core:
+            return [
+                "Watkins Core Program",
+                "Cable Crunches",
+                "Hanging Knee Raises (Pike)"
+            ]
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -461,7 +512,30 @@ struct TodayView: View {
                     }
                 }
             }
-            .navigationTitle("Today")
+            .navigationTitle("")
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    VStack(spacing: 2) {
+                        Text(Date().formatted(date: .abbreviated, time: .omitted))
+                            .font(.headline)
+                        Text(dailyWorkout.day.displayName)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu(dailyWorkout.day.displayName) {
+                        ForEach(WorkoutDay.allCases, id: \.self) { day in
+                            Button(day.displayName) {
+                                dailyWorkout.day = day
+                                // Persist immediately and refresh exercises
+                                // Save via update method
+                                UserDefaults.standard.set(day.rawValue, forKey: "workoutDay_\(dailyWorkout.dateKey)")
+                            }
+                        }
+                    }
+                }
+            }
         }
         .sheet(item: $selectedExercise) { selection in
             ExerciseSessionSheet(

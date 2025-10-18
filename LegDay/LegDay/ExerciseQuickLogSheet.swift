@@ -14,6 +14,8 @@ struct ExerciseSessionSheet: View {
     
     @ObservedObject private var timerManager = TimerManager.shared
     
+    @State private var appearedOnce = false
+    
     var sets: [SetData] {
         dailyWorkout.getSets(for: exerciseName)
     }
@@ -205,6 +207,13 @@ struct ExerciseSessionSheet: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                 }
+            }
+        }
+        .onAppear {
+            // Pre-warm sets on first appear to avoid any lazy load hiccups
+            if !appearedOnce {
+                _ = dailyWorkout.getSets(for: exerciseName)
+                appearedOnce = true
             }
         }
     }
