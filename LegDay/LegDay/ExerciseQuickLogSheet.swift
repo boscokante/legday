@@ -103,7 +103,7 @@ struct ExerciseSessionSheet: View {
                 }
                 
                 Section("Sets") {
-                    ForEach(0..<sets.count, id: \.self) { index in
+                    ForEach(Array(sets.enumerated()), id: \.element.id) { index, set in
                         EditableSetRowView(
                             exerciseName: exerciseName,
                             setIndex: index,
@@ -134,8 +134,7 @@ struct ExerciseSessionSheet: View {
                         }
                         
                         if !sets.isEmpty {
-                            ForEach(0..<sets.count, id: \.self) { index in
-                                let set = sets[index]
+                            ForEach(Array(sets.enumerated()), id: \.element.id) { index, set in
                                 HStack {
                                     Text("Set \(index + 1):")
                                         .font(.subheadline)

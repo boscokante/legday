@@ -465,6 +465,7 @@ struct TodayView: View {
                     exerciseName: exerciseName,
                     dailyWorkout: dailyWorkout
                 )
+                .id(exerciseName)
             }
         }
         .sheet(isPresented: $showingSavedWorkouts) {
