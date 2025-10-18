@@ -317,7 +317,7 @@ struct SavedWorkoutsView: View {
     @Environment(\.dismiss) private var dismiss
     
     var savedWorkouts: [[String: Any]] {
-        UserDefaults.standard.array(forKey: "savedWorkouts") as? [[String: Any]] ?? []
+        HistoryCodec.loadSavedWorkouts()
     }
     
     var body: some View {

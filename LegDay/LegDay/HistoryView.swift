@@ -61,7 +61,7 @@ struct HistoryView_Previews: PreviewProvider {
 // MARK: - Data Loading
 extension HistoryView {
     private func load() {
-        workouts = UserDefaults.standard.array(forKey: "savedWorkouts") as? [[String: Any]] ?? []
+        workouts = HistoryCodec.loadSavedWorkouts()
     }
 }
 

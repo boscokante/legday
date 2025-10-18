@@ -193,7 +193,7 @@ class DailyWorkoutSession: ObservableObject {
             "day": day.rawValue
         ]
         
-        var savedWorkouts = UserDefaults.standard.array(forKey: "savedWorkouts") as? [[String: Any]] ?? []
+        var savedWorkouts = HistoryCodec.loadSavedWorkouts()
         
         // Remove any existing workout for today
         savedWorkouts.removeAll { workout in
@@ -204,7 +204,11 @@ class DailyWorkoutSession: ObservableObject {
         }
         
         savedWorkouts.append(workoutData)
-        UserDefaults.standard.set(savedWorkouts, forKey: "savedWorkouts")
+        
+        // Save as Data
+        if let jsonData = try? JSONSerialization.data(withJSONObject: savedWorkouts) {
+            UserDefaults.standard.set(jsonData, forKey: "savedWorkouts")
+        }
         
         print("=== DAILY WORKOUT SAVED ===")
         for (exercise, sets) in exercises {
@@ -246,8 +250,8 @@ class DailyWorkoutSession: ObservableObject {
     }
     
     private func loadPreviousWorkout() {
-        guard let savedWorkouts = UserDefaults.standard.array(forKey: "savedWorkouts") as? [[String: Any]],
-              !savedWorkouts.isEmpty else {
+        let savedWorkouts = HistoryCodec.loadSavedWorkouts()
+        guard !savedWorkouts.isEmpty else {
             print("📭 No previous workouts found")
             return
         }

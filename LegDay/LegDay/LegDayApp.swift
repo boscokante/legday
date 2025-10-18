@@ -26,7 +26,7 @@ struct LegDayApp: App {
     }
     
     private func oneTimeLegdayImportIfNeeded() {
-        let hasAnySaved = (UserDefaults.standard.array(forKey: "savedWorkouts") as? [[String: Any]] ?? []).isEmpty == false
+        let hasAnySaved = !HistoryCodec.loadSavedWorkouts().isEmpty
         let already = UserDefaults.standard.bool(forKey: "legday_import_done")
         guard !hasAnySaved && !already else { return }
         if let url = Bundle.main.url(forResource: "boskoworkoutlog", withExtension: "legday"),

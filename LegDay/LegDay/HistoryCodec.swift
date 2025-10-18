@@ -40,8 +40,23 @@ enum HistoryCodec {
     static let currentVersion = 1
     static let fileExtension = "legday"
     
+    // Helper to load saved workouts from UserDefaults
+    static func loadSavedWorkouts() -> [[String: Any]] {
+        if let data = UserDefaults.standard.data(forKey: "savedWorkouts"),
+           let array = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
+            return array
+        }
+        return []
+    }
+    
     static func exportToData() throws -> Data {
-        let saved = UserDefaults.standard.array(forKey: "savedWorkouts") as? [[String: Any]] ?? []
+        // Load from Data format in UserDefaults
+        var saved: [[String: Any]] = []
+        if let data = UserDefaults.standard.data(forKey: "savedWorkouts"),
+           let array = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
+            saved = array
+        }
+        
         let workouts: [Workout] = saved.map { dict in
             let date = dict["date"] as? TimeInterval ?? Date().timeIntervalSince1970
             let day = dict["day"] as? String
@@ -72,7 +87,14 @@ enum HistoryCodec {
         guard payload.version == currentVersion else {
             throw NSError(domain: "legday.codec", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unsupported file version \(payload.version)"])
         }
-        var saved = UserDefaults.standard.array(forKey: "savedWorkouts") as? [[String: Any]] ?? []
+        
+        // Load existing saved workouts
+        var saved: [[String: Any]] = []
+        if let existingData = UserDefaults.standard.data(forKey: "savedWorkouts"),
+           let existingArray = try? JSONSerialization.jsonObject(with: existingData) as? [[String: Any]] {
+            saved = existingArray
+        }
+        
         for w in payload.workouts {
             var dict: [String: Any] = [
                 "date": w.date,
@@ -98,7 +120,11 @@ enum HistoryCodec {
             saved.append(dict)
         }
         saved.sort { ($0["date"] as? TimeInterval ?? 0) < ($1["date"] as? TimeInterval ?? 0) }
-        UserDefaults.standard.set(saved, forKey: "savedWorkouts")
+        
+        // Encode to Data before saving
+        if let jsonData = try? JSONSerialization.data(withJSONObject: saved) {
+            UserDefaults.standard.set(jsonData, forKey: "savedWorkouts")
+        }
     }
 }
 

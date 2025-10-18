@@ -13,7 +13,7 @@ struct WorkoutImporter {
         let sessions = parseMarkdown(content)
         guard !sessions.isEmpty else { return }
 
-        var saved = UserDefaults.standard.array(forKey: "savedWorkouts") as? [[String: Any]] ?? []
+        var saved = HistoryCodec.loadSavedWorkouts()
 
         for session in sessions {
             // De-dup per day
@@ -36,7 +36,10 @@ struct WorkoutImporter {
             return l < r
         }
 
-        UserDefaults.standard.set(saved, forKey: "savedWorkouts")
+        // Save as Data
+        if let jsonData = try? JSONSerialization.data(withJSONObject: saved) {
+            UserDefaults.standard.set(jsonData, forKey: "savedWorkouts")
+        }
     }
 
     // MARK: - Parsing
