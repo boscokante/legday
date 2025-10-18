@@ -102,23 +102,25 @@ struct ExerciseSessionSheet: View {
                     }
                 }
                 
-                ForEach(0..<sets.count, id: \.self) { index in
-                    EditableSetRowView(
-                        exerciseName: exerciseName,
-                        setIndex: index,
-                        dailyWorkout: dailyWorkout
-                    )
-                }
-                .onDelete(perform: deleteSets)
-                
-                Button("+ Set") {
-                    let newSet = SetData(weight: 0, reps: 10, warmup: false)
-                    dailyWorkout.addSet(to: exerciseName, set: newSet)
-                }
-                
-                Button("Warmup Preset (10×0)") {
-                    let warmupSet = SetData(weight: 0, reps: 10, warmup: true)
-                    dailyWorkout.addSet(to: exerciseName, set: warmupSet)
+                Section("Sets") {
+                    ForEach(0..<sets.count, id: \.self) { index in
+                        EditableSetRowView(
+                            exerciseName: exerciseName,
+                            setIndex: index,
+                            dailyWorkout: dailyWorkout
+                        )
+                    }
+                    .onDelete(perform: deleteSets)
+                    
+                    Button("+ Set") {
+                        let newSet = SetData(weight: 0, reps: 10, warmup: false)
+                        dailyWorkout.addSet(to: exerciseName, set: newSet)
+                    }
+                    
+                    Button("Warmup Preset (10×0)") {
+                        let warmupSet = SetData(weight: 0, reps: 10, warmup: true)
+                        dailyWorkout.addSet(to: exerciseName, set: warmupSet)
+                    }
                 }
                 
                 Section("Today's Progress") {
