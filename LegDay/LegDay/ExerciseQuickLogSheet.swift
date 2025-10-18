@@ -235,24 +235,44 @@ struct EditableSetRowView: View {
     @State private var isWarmup: Bool = false
     
     var body: some View {
-        HStack {
+        HStack(spacing: 8) {
             Text("#\(setIndex + 1)")
                 .frame(width: 30, alignment: .leading)
+                .font(.body.weight(.medium))
             
-            TextField("Weight", value: $weight, format: .number)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .onChange(of: weight) { _, newValue in
-                    updateSet()
-                }
+            // Weight field
+            VStack(alignment: .leading, spacing: 2) {
+                Text("pounds")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                TextField("0", value: $weight, format: .number)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .foregroundStyle(.blue)
+                    .font(.body.weight(.semibold))
+                    .keyboardType(.decimalPad)
+                    .onChange(of: weight) { _, newValue in
+                        updateSet()
+                    }
+            }
+            .frame(maxWidth: .infinity)
             
             Text("×")
                 .foregroundStyle(.secondary)
+                .font(.title3)
             
-            TextField("Reps", value: $reps, format: .number)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .onChange(of: reps) { _, newValue in
-                    updateSet()
-                }
+            // Reps field
+            VStack(alignment: .leading, spacing: 2) {
+                Text("reps")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                TextField("0", value: $reps, format: .number)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .keyboardType(.numberPad)
+                    .onChange(of: reps) { _, newValue in
+                        updateSet()
+                    }
+            }
+            .frame(width: 70)
             
             if isWarmup { 
                 Text("Warmup")
