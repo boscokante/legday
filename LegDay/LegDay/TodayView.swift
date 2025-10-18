@@ -138,6 +138,9 @@ class DailyWorkoutSession: ObservableObject {
     @Published var notes: String = ""
     private let dateKey: String
     
+    // Store in-progress workouts for each day separately
+    private var dayWorkouts: [WorkoutDay: (exercises: [String: [SetData]], notes: String)] = [:]
+    
     init() {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
@@ -178,47 +181,89 @@ class DailyWorkoutSession: ObservableObject {
     }
     
     func saveCompleteWorkout() {
+        // Save current day to memory first
+        saveCurrentDayToMemory()
+        
+        // Collect all workouts from all days worked on today
+        var allExercises: [String: [[String: Any]]] = [:]
+        var allNotes: [String] = []
+        var daysWorked: Set<String> = []
+        
+        // Add current day if it has exercises
+        if !exercises.isEmpty {
+            daysWorked.insert(day.rawValue)
+            for (exerciseName, sets) in exercises {
+                allExercises[exerciseName] = sets.map { set in
+                    ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
+                }
+            }
+            if !notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                allNotes.append("\(day.displayName): \(notes)")
+            }
+        }
+        
+        // Add other days from memory cache
+        for (workoutDay, data) in dayWorkouts where workoutDay != day {
+            if !data.exercises.isEmpty {
+                daysWorked.insert(workoutDay.rawValue)
+                for (exerciseName, sets) in data.exercises {
+                    allExercises[exerciseName] = sets.map { set in
+                        ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
+                    }
+                }
+                if !data.notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    allNotes.append("\(workoutDay.displayName): \(data.notes)")
+                }
+            }
+        }
+        
+        guard !allExercises.isEmpty else {
+            print("⚠️ No exercises to save")
+            return
+        }
+        
+        let combinedNotes = allNotes.joined(separator: "\n")
+        let combinedDay = daysWorked.sorted().joined(separator: ", ")
+        
         let workoutData: [String: Any] = [
             "date": Date().timeIntervalSince1970,
-            "exercises": exercises.mapValues { sets in
-                sets.map { set in
-                    [
-                        "weight": set.weight,
-                        "reps": set.reps,
-                        "warmup": set.warmup
-                    ]
-                }
-            },
-            "notes": notes,
-            "day": day.rawValue
+            "exercises": allExercises,
+            "notes": combinedNotes,
+            "day": combinedDay
         ]
         
         var savedWorkouts = HistoryCodec.loadSavedWorkouts()
-        
-        // Remove any existing workout for today
         savedWorkouts.removeAll { workout in
             if let date = workout["date"] as? TimeInterval {
                 return Calendar.current.isDate(Date(timeIntervalSince1970: date), inSameDayAs: Date())
             }
             return false
         }
-        
         savedWorkouts.append(workoutData)
         
-        // Save as Data
         if let jsonData = try? JSONSerialization.data(withJSONObject: savedWorkouts) {
             UserDefaults.standard.set(jsonData, forKey: "savedWorkouts")
         }
         
-        print("=== DAILY WORKOUT SAVED ===")
-        for (exercise, sets) in exercises {
-            print("\(exercise): \(sets.count) sets")
-            for (index, set) in sets.enumerated() {
-                let warmupText = set.warmup ? " (Warmup)" : ""
-                print("  Set \(index + 1): \(set.weight) lbs × \(set.reps) reps\(warmupText)")
+        // Clear temp storage after successful save
+        clearTempStorage()
+        dayWorkouts.removeAll()
+        
+        print("=== WORKOUT SAVED: \(combinedDay) ===")
+        for (exercise, sets) in allExercises {
+            if let setArray = sets as? [[String: Any]] {
+                print("\(exercise): \(setArray.count) sets")
             }
         }
         print("=============================")
+    }
+    
+    private func clearTempStorage() {
+        for workoutDay in WorkoutDay.allCases {
+            let dayKey = "tempWorkout_\(dateKey)_\(workoutDay.rawValue)"
+            UserDefaults.standard.removeObject(forKey: dayKey)
+            UserDefaults.standard.removeObject(forKey: "tempNotes_\(dateKey)_\(workoutDay.rawValue)")
+        }
     }
     
     private func saveTodaysWorkout() {
@@ -334,9 +379,58 @@ class DailyWorkoutSession: ObservableObject {
     }
     
     func updateDay(_ newDay: WorkoutDay) {
+        // Save current day's work before switching
+        saveCurrentDayToMemory()
+        
+        // Switch to new day
         day = newDay
-        saveTodaysWorkout()
+        
+        // Load the new day's work from memory or storage
+        loadDayFromMemory()
+        
         objectWillChange.send()
+    }
+    
+    private func saveCurrentDayToMemory() {
+        // Store current state for this day in memory
+        dayWorkouts[day] = (exercises: exercises, notes: notes)
+        
+        // Also persist to UserDefaults with day-specific key
+        let dayKey = "tempWorkout_\(dateKey)_\(day.rawValue)"
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(exercises) {
+            UserDefaults.standard.set(encoded, forKey: dayKey)
+        }
+        UserDefaults.standard.set(notes, forKey: "tempNotes_\(dateKey)_\(day.rawValue)")
+    }
+    
+    private func loadDayFromMemory() {
+        // First check in-memory cache
+        if let cached = dayWorkouts[day] {
+            exercises = cached.exercises
+            notes = cached.notes
+            print("📦 Loaded \(day.displayName) from memory cache")
+            return
+        }
+        
+        // Then check UserDefaults temp storage
+        let dayKey = "tempWorkout_\(dateKey)_\(day.rawValue)"
+        if let data = UserDefaults.standard.data(forKey: dayKey),
+           let decoded = try? JSONDecoder().decode([String: [SetData]].self, from: data) {
+            exercises = decoded
+            if let savedNotes = UserDefaults.standard.string(forKey: "tempNotes_\(dateKey)_\(day.rawValue)") {
+                notes = savedNotes
+            }
+            // Cache it
+            dayWorkouts[day] = (exercises: exercises, notes: notes)
+            print("📦 Loaded \(day.displayName) from temp storage")
+            return
+        }
+        
+        // Finally, try to load from previous workout for this day
+        exercises.removeAll()
+        notes = ""
+        loadPreviousWorkout()
     }
 }
 
