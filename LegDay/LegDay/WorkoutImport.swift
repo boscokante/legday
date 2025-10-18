@@ -161,7 +161,7 @@ struct WorkoutImporter {
 
     private static func extractSets(from line: String) -> [[String: Any]] {
         // Find tokens like 10x115 or 3.5 x 205
-        let pattern = "(\n|^|\t|\s)(\n|\t|\s)*([0-9]+(?:\\.[0-9]+)?)\\s*x\\s*([0-9]+(?:\\.[0-9]+)?)"
+        let pattern = "(\\n|^|\\t|\\s)(\\n|\\t|\\s)*([0-9]+(?:\\.[0-9]+)?)\\s*x\\s*([0-9]+(?:\\.[0-9]+)?)"
         guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else { return [] }
         let nsrange = NSRange(line.startIndex..<line.endIndex, in: line)
         var results: [[String: Any]] = []
