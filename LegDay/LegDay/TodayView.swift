@@ -306,12 +306,17 @@ class DailyWorkoutSession: ObservableObject {
     }
 }
 
+// Identifiable wrapper for presenting exercise sheet safely
+private struct ExerciseSelection: Identifiable, Equatable {
+    let name: String
+    var id: String { name }
+}
+
 struct TodayView: View {
     @Environment(\.managedObjectContext) private var ctx
     @StateObject private var dailyWorkout = DailyWorkoutSession()
     @ObservedObject private var timerManager = TimerManager.shared
-    @State private var showExerciseSheet: Bool = false
-    @State private var activeExerciseName: String?
+    @State private var selectedExercise: ExerciseSelection?
     @State private var showingSavedWorkouts: Bool = false
     @State private var showingWorkoutSaved: Bool = false
 
@@ -403,8 +408,7 @@ struct TodayView: View {
                     ForEach(exercises, id: \.self) { exercise in
                         HStack {
                             Button(exercise) {
-                                activeExerciseName = exercise
-                                showExerciseSheet = true
+                                selectedExercise = ExerciseSelection(name: exercise)
                             }
                             .foregroundStyle(.primary)
                             
@@ -459,14 +463,11 @@ struct TodayView: View {
             }
             .navigationTitle("Today")
         }
-        .sheet(isPresented: $showExerciseSheet) {
-            if let exerciseName = activeExerciseName {
-                ExerciseSessionSheet(
-                    exerciseName: exerciseName,
-                    dailyWorkout: dailyWorkout
-                )
-                .id(exerciseName)
-            }
+        .sheet(item: $selectedExercise) { selection in
+            ExerciseSessionSheet(
+                exerciseName: selection.name,
+                dailyWorkout: dailyWorkout
+            )
         }
         .sheet(isPresented: $showingSavedWorkouts) {
             SavedWorkoutsView()
