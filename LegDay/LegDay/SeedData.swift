@@ -31,7 +31,7 @@ struct SeedData {
             ("Bulgarian Split Squat", true),
             ("Leg Press", true),
             ("Single-Leg Extension", false),
-            ("Decline", false),
+            // Removed Decline from Leg Day per requirements
             ("Hamstring Curl", false),
             ("Standing Calf Raise", false),
             ("Seated Calf Raise", false),

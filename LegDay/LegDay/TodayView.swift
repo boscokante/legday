@@ -525,12 +525,9 @@ struct TodayView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu(dailyWorkout.day.displayName) {
-                        ForEach(WorkoutDay.allCases, id: \.self) { day in
-                            Button(day.displayName) {
-                                dailyWorkout.day = day
-                                // Persist immediately and refresh exercises
-                                // Save via update method
-                                UserDefaults.standard.set(day.rawValue, forKey: "workoutDay_\(dailyWorkout.dateKey)")
+                        ForEach(WorkoutDay.allCases, id: \.self) { option in
+                            Button(option.displayName) {
+                                dailyWorkout.updateDay(option)
                             }
                         }
                     }
