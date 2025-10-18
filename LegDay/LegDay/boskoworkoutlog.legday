@@ -92,37 +92,37 @@
       "exercises": {
         "Bench Press": [
           {
-            "weight": 12.0,
+            "weight": -8.0,
             "reps": 135,
             "warmup": false
           },
           {
-            "weight": 10.0,
+            "weight": -10.0,
             "reps": 155,
             "warmup": false
           },
           {
-            "weight": 5.0,
+            "weight": -15.0,
             "reps": 175,
             "warmup": false
           },
           {
-            "weight": 4.0,
+            "weight": -16.0,
             "reps": 185,
             "warmup": false
           },
           {
-            "weight": 6.0,
+            "weight": -14.0,
             "reps": 185,
             "warmup": false
           },
           {
-            "weight": 4.0,
+            "weight": -16.0,
             "reps": 195,
             "warmup": false
           },
           {
-            "weight": 4.0,
+            "weight": -16.0,
             "reps": 195,
             "warmup": false
           }
@@ -404,7 +404,12 @@
       "exercises": {
         "Bench Press": [
           {
-            "weight": 95.0,
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 115.0,
             "reps": 8,
             "warmup": false
           },
@@ -414,37 +419,32 @@
             "warmup": false
           },
           {
-            "weight": 155.0,
-            "reps": 8,
-            "warmup": false
-          },
-          {
-            "weight": 185.0,
+            "weight": 165.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 205.0,
+            "weight": 185.0,
             "reps": 3,
             "warmup": false
           },
           {
-            "weight": 215.0,
+            "weight": 195.0,
             "reps": 2,
             "warmup": false
           },
           {
-            "weight": 225.0,
+            "weight": 205.0,
             "reps": 1,
             "warmup": false
           },
           {
-            "weight": 185.0,
+            "weight": 165.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 185.0,
+            "weight": 165.0,
             "reps": 5,
             "warmup": false
           }
@@ -683,42 +683,42 @@
       "exercises": {
         "Bench Press": [
           {
-            "weight": 135.0,
+            "weight": 115.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 145.0,
             "reps": 8,
             "warmup": false
           },
           {
             "weight": 165.0,
-            "reps": 8,
+            "reps": 5,
             "warmup": false
           },
           {
             "weight": 185.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 195.0,
+            "reps": 2,
+            "warmup": false
+          },
+          {
+            "weight": 165.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 170.0,
             "reps": 5,
             "warmup": false
           },
           {
             "weight": 205.0,
-            "reps": 3,
-            "warmup": false
-          },
-          {
-            "weight": 215.0,
-            "reps": 2,
-            "warmup": false
-          },
-          {
-            "weight": 185.0,
-            "reps": 5,
-            "warmup": false
-          },
-          {
-            "weight": 190.0,
-            "reps": 5,
-            "warmup": false
-          },
-          {
-            "weight": 225.0,
             "reps": 1,
             "warmup": false
           }
@@ -1060,13 +1060,28 @@
       "exercises": {
         "Bench Press": [
           {
-            "weight": 135.0,
+            "weight": 115.0,
             "reps": 10,
             "warmup": false
           },
           {
-            "weight": 175.0,
+            "weight": 155.0,
             "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 165.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 185.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 195.0,
+            "reps": 2,
             "warmup": false
           },
           {
@@ -1076,31 +1091,16 @@
           },
           {
             "weight": 205.0,
-            "reps": 5,
-            "warmup": false
-          },
-          {
-            "weight": 215.0,
-            "reps": 2,
-            "warmup": false
-          },
-          {
-            "weight": 205.0,
-            "reps": 5,
-            "warmup": false
-          },
-          {
-            "weight": 225.0,
             "reps": 1,
             "warmup": false
           },
           {
-            "weight": 205.0,
+            "weight": 185.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 205.0,
+            "weight": 185.0,
             "reps": 4,
             "warmup": false
           }
@@ -1334,47 +1334,47 @@
       "exercises": {
         "Bench Press": [
           {
-            "weight": 95.0,
+            "weight": 75.0,
             "reps": 15,
             "warmup": false
           },
           {
-            "weight": 135.0,
+            "weight": 115.0,
             "reps": 10,
             "warmup": false
           },
           {
-            "weight": 175.0,
+            "weight": 155.0,
             "reps": 8,
             "warmup": false
           },
           {
-            "weight": 185.0,
+            "weight": 165.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 205.0,
+            "weight": 185.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 185.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 185.0,
             "reps": 4,
             "warmup": false
           },
           {
             "weight": 205.0,
-            "reps": 4,
-            "warmup": false
-          },
-          {
-            "weight": 205.0,
-            "reps": 4,
-            "warmup": false
-          },
-          {
-            "weight": 225.0,
             "reps": 1,
             "warmup": false
           },
           {
-            "weight": 205.0,
+            "weight": 185.0,
             "reps": 4,
             "warmup": false
           }
@@ -1601,47 +1601,47 @@
         ],
         "Bench Press": [
           {
-            "weight": 135.0,
+            "weight": 115.0,
             "reps": 10,
             "warmup": false
           },
           {
-            "weight": 175.0,
+            "weight": 155.0,
             "reps": 8,
             "warmup": false
           },
           {
-            "weight": 195.0,
+            "weight": 175.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 205.0,
+            "weight": 185.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 205.0,
+            "weight": 185.0,
             "reps": 4,
             "warmup": false
           },
           {
-            "weight": 230.0,
+            "weight": 210.0,
             "reps": 1,
             "warmup": false
           },
           {
-            "weight": 235.0,
+            "weight": 215.0,
             "reps": 1,
             "warmup": false
           },
           {
-            "weight": 205.0,
+            "weight": 185.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 205.0,
+            "weight": 185.0,
             "reps": 4,
             "warmup": false
           }
@@ -2066,28 +2066,33 @@
             "warmup": true
           },
           {
-            "weight": 185.0,
+            "weight": 165.0,
             "reps": 6,
             "warmup": false
           },
           {
-            "weight": 205.0,
+            "weight": 185.0,
             "reps": 4,
             "warmup": false
           },
           {
-            "weight": 205.0,
+            "weight": 185.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 215.0,
+            "weight": 195.0,
             "reps": 4,
             "warmup": false
           },
           {
-            "weight": 215.0,
+            "weight": 195.0,
             "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 1,
             "warmup": false
           },
           {
@@ -2096,17 +2101,12 @@
             "warmup": false
           },
           {
-            "weight": 245.0,
-            "reps": 1,
-            "warmup": false
-          },
-          {
-            "weight": 205.0,
+            "weight": 185.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 215.0,
+            "weight": 195.0,
             "reps": 3,
             "warmup": false
           }
@@ -2169,37 +2169,37 @@
             "warmup": true
           },
           {
+            "weight": 165.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
             "weight": 185.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 205.0,
+            "weight": 195.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 215.0,
-            "reps": 5,
+            "weight": 205.0,
+            "reps": 4,
             "warmup": false
           },
           {
             "weight": 225.0,
-            "reps": 4,
-            "warmup": false
-          },
-          {
-            "weight": 245.0,
             "reps": 1,
             "warmup": false
           },
           {
-            "weight": 205.0,
+            "weight": 185.0,
             "reps": 4,
             "warmup": false
           },
           {
-            "weight": 205.0,
+            "weight": 185.0,
             "reps": 4,
             "warmup": false
           }
@@ -2408,42 +2408,42 @@
             "warmup": true
           },
           {
-            "weight": 135.0,
+            "weight": 115.0,
             "reps": 8,
             "warmup": false
           },
           {
-            "weight": 185.0,
+            "weight": 165.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 210.0,
+            "weight": 190.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 215.0,
+            "weight": 195.0,
             "reps": 4,
             "warmup": false
           },
           {
-            "weight": 215.0,
+            "weight": 195.0,
             "reps": 4,
             "warmup": false
           },
           {
-            "weight": 225.0,
+            "weight": 205.0,
             "reps": 3,
             "warmup": false
           },
           {
-            "weight": 245.0,
+            "weight": 225.0,
             "reps": 1,
             "warmup": false
           },
           {
-            "weight": 225.0,
+            "weight": 205.0,
             "reps": 3,
             "warmup": false
           }
@@ -2577,47 +2577,47 @@
       "exercises": {
         "Bench Press": [
           {
-            "weight": 115.0,
+            "weight": 95.0,
             "reps": 15,
             "warmup": false
           },
           {
-            "weight": 135.0,
+            "weight": 115.0,
             "reps": 10,
             "warmup": false
           },
           {
-            "weight": 185.0,
+            "weight": 165.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 215.0,
+            "weight": 195.0,
             "reps": 5,
             "warmup": false
           },
           {
-            "weight": 225.0,
+            "weight": 205.0,
             "reps": 4,
             "warmup": false
           },
           {
-            "weight": 250.0,
+            "weight": 230.0,
             "reps": 1,
             "warmup": false
           },
           {
-            "weight": 255.0,
+            "weight": 235.0,
             "reps": 1,
             "warmup": false
           },
           {
-            "weight": 225.0,
+            "weight": 205.0,
             "reps": 3,
             "warmup": false
           },
           {
-            "weight": 225.0,
+            "weight": 205.0,
             "reps": 3,
             "warmup": false
           }
