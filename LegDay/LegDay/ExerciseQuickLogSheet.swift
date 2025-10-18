@@ -334,6 +334,15 @@ struct SavedWorkoutsView: View {
                                     }
                                 }
                             }
+                            if let notes = workout["notes"] as? String, !notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                Text("Notes:")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(notes)
+                                    .font(.caption)
+                                    .foregroundStyle(.primary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
                         }
                         .padding(.vertical, 2)
                     }

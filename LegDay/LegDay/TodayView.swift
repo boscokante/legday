@@ -125,6 +125,7 @@ class TimerManager: ObservableObject {
 // Daily workout session model
 class DailyWorkoutSession: ObservableObject {
     @Published var exercises: [String: [SetData]] = [:]
+    @Published var notes: String = ""
     private let dateKey: String
     
     init() {
@@ -177,7 +178,8 @@ class DailyWorkoutSession: ObservableObject {
                         "warmup": set.warmup
                     ]
                 }
-            }
+            },
+            "notes": notes
         ]
         
         var savedWorkouts = UserDefaults.standard.array(forKey: "savedWorkouts") as? [[String: Any]] ?? []
@@ -209,6 +211,7 @@ class DailyWorkoutSession: ObservableObject {
         if let encoded = try? encoder.encode(exercises) {
             UserDefaults.standard.set(encoded, forKey: "workout_\(dateKey)")
         }
+        UserDefaults.standard.set(notes, forKey: "workoutNotes_\(dateKey)")
     }
     
     private func loadTodaysWorkout() {
@@ -220,6 +223,9 @@ class DailyWorkoutSession: ObservableObject {
         } else {
             // If no workout for today, prefill with previous workout
             loadPreviousWorkout()
+        }
+        if let savedNotes = UserDefaults.standard.string(forKey: "workoutNotes_\(dateKey)") {
+            notes = savedNotes
         }
     }
     
@@ -265,6 +271,9 @@ class DailyWorkoutSession: ObservableObject {
         
         if !loadedExercises.isEmpty {
             exercises = loadedExercises
+            if let prevNotes = mostRecent.data["notes"] as? String {
+                notes = prevNotes
+            }
             // Save as today's starting point
             saveTodaysWorkout()
             
@@ -278,7 +287,9 @@ class DailyWorkoutSession: ObservableObject {
     
     func clearTodaysWorkout() {
         exercises.removeAll()
+        notes = ""
         UserDefaults.standard.removeObject(forKey: "workout_\(dateKey)")
+        UserDefaults.standard.removeObject(forKey: "workoutNotes_\(dateKey)")
     }
     
     func loadPreviousWorkoutManually() {
@@ -286,6 +297,12 @@ class DailyWorkoutSession: ObservableObject {
         exercises.removeAll()
         // Load previous workout
         loadPreviousWorkout()
+    }
+    
+    func updateNotes(_ newNotes: String) {
+        notes = newNotes
+        saveTodaysWorkout()
+        objectWillChange.send()
     }
 }
 
@@ -302,7 +319,6 @@ struct TodayView: View {
         "Bulgarian Split Squat",
         "Leg Press", 
         "Single-Leg Extension",
-        "Decline",
         "Hamstring Curl",
         "Standing Calf Raise",
         "Seated Calf Raise",
@@ -402,6 +418,14 @@ struct TodayView: View {
                             }
                         }
                     }
+                }
+                
+                Section("Notes") {
+                    TextEditor(text: Binding(
+                        get: { dailyWorkout.notes },
+                        set: { dailyWorkout.updateNotes($0) }
+                    ))
+                    .frame(minHeight: 120)
                 }
                 
                 Section {
