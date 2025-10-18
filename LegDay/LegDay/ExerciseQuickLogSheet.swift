@@ -240,11 +240,8 @@ struct EditableSetRowView: View {
                 .frame(width: 30, alignment: .leading)
                 .font(.body.weight(.medium))
             
-            // Weight field
-            VStack(alignment: .leading, spacing: 2) {
-                Text("pounds")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+            // Weight field with label
+            HStack(spacing: 4) {
                 TextField("0", value: $weight, format: .number)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .foregroundStyle(.blue)
@@ -253,31 +250,36 @@ struct EditableSetRowView: View {
                     .onChange(of: weight) { _, newValue in
                         updateSet()
                     }
+                Text("lbs")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .frame(width: 28, alignment: .leading)
             }
-            .frame(maxWidth: .infinity)
             
             Text("×")
                 .foregroundStyle(.secondary)
                 .font(.title3)
             
-            // Reps field
-            VStack(alignment: .leading, spacing: 2) {
-                Text("reps")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+            // Reps field with label
+            HStack(spacing: 4) {
                 TextField("0", value: $reps, format: .number)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .keyboardType(.numberPad)
                     .onChange(of: reps) { _, newValue in
                         updateSet()
                     }
+                    .frame(width: 50)
+                Text("reps")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .frame(width: 32, alignment: .leading)
             }
-            .frame(width: 70)
             
             if isWarmup { 
-                Text("Warmup")
+                Text("W")
                     .foregroundStyle(.orange)
                     .font(.caption)
+                    .fontWeight(.bold)
             }
         }
         .onAppear {
