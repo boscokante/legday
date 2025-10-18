@@ -516,9 +516,12 @@ struct TodayView: View {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     VStack(spacing: 2) {
-                        Text(Date().formatted(date: .abbreviated, time: .omitted))
-                            .font(.headline)
                         Text(dailyWorkout.day.displayName)
+                            .font(.system(size: 28, weight: .heavy))
+                            .foregroundStyle(.primary)
+                            .minimumScaleFactor(0.8)
+                            .lineLimit(1)
+                        Text(Date().formatted(date: .abbreviated, time: .omitted))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }

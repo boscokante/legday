@@ -1,0 +1,2542 @@
+{
+  "exportedAt" : 1760764217.6305661,
+  "version" : 1,
+  "workouts" : [
+    {
+      "date" : 1735718400,
+      "day" : "Core Day, Leg Day, Pull Day, Push Day",
+      "exercises" : {
+        "Bench Press" : [
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 40
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          }
+        ],
+        "Bulgarian Split Squat" : [
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 40
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 60
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 40
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 60
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 60
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 60
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 60
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 25
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 40
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 20
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 7,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 60
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 60
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 60
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 70
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 35
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 55
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 70
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 40
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 55
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 70
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 40
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 55
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 70
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 30
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 70
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 70
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 25
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 55
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 60
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 60
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 25
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 35
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 55
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 70
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 15
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 25
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 35
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 55
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 0,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 20
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 35
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 55
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 60
+          },
+          {
+            "reps" : 0,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 35
+          },
+          {
+            "reps" : 50,
+            "warmup" : false,
+            "weight" : 5
+          },
+          {
+            "reps" : 50,
+            "warmup" : false,
+            "weight" : 5
+          }
+        ],
+        "Hamstring Curl" : [
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 120
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 60
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 70
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 70
+          }
+        ],
+        "Leg Press" : [
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 8
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 12
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 8
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 12
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 14
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 16
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 8
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 7,
+            "warmup" : false,
+            "weight" : 12
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 14
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 16
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 8
+          },
+          {
+            "reps" : 7,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 12
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 14
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 8
+          },
+          {
+            "reps" : 7,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 12
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 16
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 16
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 6
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 12
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 14
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 16
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 16
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 6
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 12
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 14
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 16
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 6
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 8
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 12
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 14
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 16
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 5
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 8
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 12
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 14
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 16
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 16
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 8
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 12
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 8
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 12
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 14
+          },
+          {
+            "reps" : 7,
+            "warmup" : false,
+            "weight" : 16
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 8
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 12
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 14
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 14
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 6
+          }
+        ],
+        "RDL (Barbell)" : [
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 95
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 115
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 150
+          }
+        ],
+        "RDL (Dumbbells)" : [
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 30,
+            "warmup" : false,
+            "weight" : 2
+          },
+          {
+            "reps" : 30,
+            "warmup" : false,
+            "weight" : 2
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 1
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 1
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 1
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 1
+          },
+          {
+            "reps" : 2,
+            "warmup" : false,
+            "weight" : 25
+          },
+          {
+            "reps" : 2,
+            "warmup" : false,
+            "weight" : 25
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 2,
+            "warmup" : false,
+            "weight" : 25
+          },
+          {
+            "reps" : 2,
+            "warmup" : false,
+            "weight" : 25
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 5
+          }
+        ],
+        "Seated Calf Raise" : [
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 140
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 140
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 70
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 90
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 90
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 90
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 70
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 80
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 80
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 80
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 90
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 160
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 135
+          }
+        ],
+        "Single-Leg Extension" : [
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 55
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 55
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 85
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 65
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 7,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 60
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 70
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 55
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 70
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 70
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 75
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 115
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 165
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 165
+          },
+          {
+            "reps" : 2,
+            "warmup" : false,
+            "weight" : 25
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 15
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 40
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 7,
+            "warmup" : false,
+            "weight" : 40
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 35
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 25,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 160
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 175
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 175
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 175
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 160
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 175
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 190
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 160
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 160
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 160
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 175
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 115
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 145
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 160
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 160
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 175
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 115
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 130
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 130
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 115
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 165
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 185
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 185
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 15,
+            "warmup" : false,
+            "weight" : 115
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 185
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 215
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 225
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 250
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 255
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 225
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 225
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 185
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 210
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 215
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 215
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 225
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 245
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 225
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 185
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 215
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 225
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 245
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 185
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 215
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 215
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 225
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 245
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 215
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 175
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 195
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 230
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 235
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 15,
+            "warmup" : false,
+            "weight" : 95
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 175
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 185
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 225
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 10,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 175
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 185
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 2,
+            "warmup" : false,
+            "weight" : 215
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 225
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 165
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 185
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 2,
+            "warmup" : false,
+            "weight" : 215
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 185
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 190
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 225
+          },
+          {
+            "reps" : 135,
+            "warmup" : false,
+            "weight" : 12
+          },
+          {
+            "reps" : 155,
+            "warmup" : false,
+            "weight" : 10
+          },
+          {
+            "reps" : 175,
+            "warmup" : false,
+            "weight" : 5
+          },
+          {
+            "reps" : 185,
+            "warmup" : false,
+            "weight" : 4
+          },
+          {
+            "reps" : 185,
+            "warmup" : false,
+            "weight" : 6
+          },
+          {
+            "reps" : 195,
+            "warmup" : false,
+            "weight" : 4
+          },
+          {
+            "reps" : 195,
+            "warmup" : false,
+            "weight" : 4
+          },
+          {
+            "reps" : 7,
+            "warmup" : false,
+            "weight" : 115
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 145
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 145
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 155
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 155
+          },
+          {
+            "reps" : 6,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 165
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 145
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 165
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 175
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 175
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 155
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 165
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 175
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 175
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 155
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 165
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 165
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 155
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 155
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 165
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 170
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 175
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 145
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 155
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 165
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 170
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 145
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 150
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 150
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 150
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 140
+          },
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 140
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 20,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 7,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 20,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 15,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 16,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 15,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 15,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 25
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 50
+          },
+          {
+            "reps" : 12,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 30
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 45
+          },
+          {
+            "reps" : 10,
+            "warmup" : true,
+            "weight" : 0
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 20
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 30
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 45
+          }
+        ],
+        "Unknown" : [
+          {
+            "reps" : 4,
+            "warmup" : false,
+            "weight" : 45
+          }
+        ]
+      },
+      "notes" : "Start: 5:40am  end: 7am\n1.Elliptical. 5min warmup\n1 sets bar front squat, 1 sets 95 front, 1 set 5 back squat\n6-270x5, 8-360x5, 10-450x5, 12-540x5, 12-540x5\n1-5x50, 1-5x60, 1-5x70, 1-5x70, 1-5x70\n1-40x10, 1-50x6, 1-50x6, 1-60x5\n3 sets of 5, close to max\nDidn't do\n11plates x 5, 11 plates x 5, 11 plates x 5, 10 plates x 5\nSqueez legs together\n3 sets around 100lbs\n? X 10, ? X 10, 5 x ?\nRehab\nsingle leg bal, 3 sets of 10. Ox jumps at 4 height, sprints at home\nSingle leg balance\nJumps\n3 min treadmill x 2\n2025\nStart: 5:40am    End: 6:34\nWarm Up: 5 min Eliptical\nSINGLE ARM ROWS:\nBENT OVER ROWS\nPULL UPSl\n8, 5,  4, 5, 4.75\n5, 5,4,3\n6, 6, 4, 4, 4\n6, 4, 4,3, 4\n6, 5, 3,4\n6xbody, 5, 3, 4, 4\nAug21-5xbody, 4, 3, 3, 2\n5 x body, 4x. Body, 4x body, 4x body, 3..5 x body, 3 x body\n6x body weight,  4.5 x body,  3, 2 , 2\nDUMBBELL CURLS\nLAT PULLDOWNS\nfull chest workout no track\nINCLINE BENCH\nfull workout in Chicago\n4 sets 5"
+    },
+    {
+      "date" : 1741161600,
+      "day" : "Core Day, Push Day",
+      "exercises" : {
+        "Single-Leg Extension" : [
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 145
+          },
+          {
+            "reps" : 2,
+            "warmup" : false,
+            "weight" : 150
+          },
+          {
+            "reps" : 30,
+            "warmup" : false,
+            "weight" : 15
+          }
+        ]
+      },
+      "notes" : "arm and leg  8lbs\nDead Bug one arm one leg 60sec 8lbs\nSuperman 8lbs\nDIPS"
+    },
+    {
+      "date" : 1754463600,
+      "exercises" : {
+
+      },
+      "notes" : "Start: 6:15       End:          Total time:\nELLIPTICAL. 5min\nBENCH"
+    },
+    {
+      "date" : 1754722800,
+      "exercises" : {
+
+      },
+      "notes" : "Start: 7:00"
+    },
+    {
+      "date" : 1755068400,
+      "day" : "Push Day",
+      "exercises" : {
+        "Single-Leg Extension" : [
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 95
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 135
+          },
+          {
+            "reps" : 8,
+            "warmup" : false,
+            "weight" : 155
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 185
+          },
+          {
+            "reps" : 3,
+            "warmup" : false,
+            "weight" : 205
+          },
+          {
+            "reps" : 2,
+            "warmup" : false,
+            "weight" : 215
+          },
+          {
+            "reps" : 1,
+            "warmup" : false,
+            "weight" : 225
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 185
+          },
+          {
+            "reps" : 5,
+            "warmup" : false,
+            "weight" : 185
+          }
+        ]
+      }
+    }
+  ]
+}

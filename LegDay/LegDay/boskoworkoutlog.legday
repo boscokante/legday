@@ -1,0 +1,3126 @@
+{
+  "version": 1,
+  "exportedAt": 1760765032.941387,
+  "workouts": [
+    {
+      "date": 1741161600,
+      "day": "Push Day",
+      "notes": null,
+      "exercises": {
+        "Incline Bench": [
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 115.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 135.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1754377200,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 10.0,
+            "reps": 0,
+            "warmup": false
+          },
+          {
+            "weight": 20.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 25.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 35.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 45.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 5.0,
+            "reps": 50,
+            "warmup": false
+          },
+          {
+            "weight": 5.0,
+            "reps": 50,
+            "warmup": false
+          },
+          {
+            "weight": 5.0,
+            "reps": 50,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1754463600,
+      "day": "Push Day",
+      "notes": null,
+      "exercises": {
+        "Bench Press": [
+          {
+            "weight": 12.0,
+            "reps": 135,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 155,
+            "warmup": false
+          },
+          {
+            "weight": 5.0,
+            "reps": 175,
+            "warmup": false
+          },
+          {
+            "weight": 4.0,
+            "reps": 185,
+            "warmup": false
+          },
+          {
+            "weight": 6.0,
+            "reps": 185,
+            "warmup": false
+          },
+          {
+            "weight": 4.0,
+            "reps": 195,
+            "warmup": false
+          },
+          {
+            "weight": 4.0,
+            "reps": 195,
+            "warmup": false
+          }
+        ],
+        "Incline Bench": [
+          {
+            "weight": 95.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 140.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 145.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 150.0,
+            "reps": 2,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1754550000,
+      "day": "Pull Day",
+      "notes": null,
+      "exercises": {
+        "Single-Arm Row": [
+          {
+            "weight": 50.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1754636400,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 10.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 25.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 35.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 45.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 55.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 65.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 0,
+            "warmup": false
+          },
+          {
+            "weight": 15.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 20.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 35.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 45.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 50.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 55.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 60.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Leg Press": [
+          {
+            "weight": 8.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 12.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 14.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 16.0,
+            "reps": 7,
+            "warmup": false
+          }
+        ],
+        "Hamstring Curl": [
+          {
+            "weight": 50.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 60.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Pull-Ups": [
+          {
+            "weight": 0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 2,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 2,
+            "warmup": false
+          }
+        ],
+        "Dumbbell Curls": [
+          {
+            "weight": 35.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 45.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 50.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 50.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 45.0,
+            "reps": 25,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1755068400,
+      "day": "Push Day",
+      "notes": null,
+      "exercises": {
+        "Bench Press": [
+          {
+            "weight": 95.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 135.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 155.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 185.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 215.0,
+            "reps": 2,
+            "warmup": false
+          },
+          {
+            "weight": 225.0,
+            "reps": 1,
+            "warmup": false
+          },
+          {
+            "weight": 185.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 185.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1755327600,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 25.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 45.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 55.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 65.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 60.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 60.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Leg Press": [
+          {
+            "weight": 8.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 12.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Hamstring Curl": [
+          {
+            "weight": 50.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 60.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1755500400,
+      "day": "Pull Day",
+      "notes": null,
+      "exercises": {
+        "Single-Arm Row": [
+          {
+            "weight": 50.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Pull-Ups": [
+          {
+            "weight": 0,
+            "reps": 18,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 3,
+            "warmup": false
+          }
+        ],
+        "Lat Pulldown": [
+          {
+            "weight": 115.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 130.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 130.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1755586800,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 10.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 30.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 50.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 65.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1755673200,
+      "day": "Push Day",
+      "notes": null,
+      "exercises": {
+        "Bench Press": [
+          {
+            "weight": 135.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 165.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 185.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 215.0,
+            "reps": 2,
+            "warmup": false
+          },
+          {
+            "weight": 185.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 190.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 225.0,
+            "reps": 1,
+            "warmup": false
+          }
+        ],
+        "Incline Bench": [
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 140.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 140.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1755759600,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Leg Press": [
+          {
+            "weight": 5.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 8.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 12.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 14.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 16.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 16.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Single-Arm Row": [
+          {
+            "weight": 55.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          }
+        ],
+        "Pull-Ups": [
+          {
+            "weight": 0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 2,
+            "warmup": false
+          }
+        ],
+        "Lat Pulldown": [
+          {
+            "weight": 115.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 145.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 160.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 160.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 4,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1755932400,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 40.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 50.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 65.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1756105200,
+      "day": "Pull Day",
+      "notes": null,
+      "exercises": {
+        "Single-Arm Row": [
+          {
+            "weight": 60.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1756191600,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 40.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 55.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Leg Press": [
+          {
+            "weight": 6.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 8.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 12.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 14.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 16.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Pull-Ups": [
+          {
+            "weight": 0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 4,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1756278000,
+      "day": "Push Day",
+      "notes": null,
+      "exercises": {
+        "Bench Press": [
+          {
+            "weight": 135.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 185.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 215.0,
+            "reps": 2,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 225.0,
+            "reps": 1,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 4,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1756364400,
+      "day": "Pull Day",
+      "notes": null,
+      "exercises": {
+        "Single-Arm Row": [
+          {
+            "weight": 65.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 7,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          }
+        ],
+        "Pull-Ups": [
+          {
+            "weight": 0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 4,
+            "warmup": false
+          }
+        ],
+        "Lat Pulldown": [
+          {
+            "weight": 160.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 160.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 160.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 4,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1756450800,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 40.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 55.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Leg Press": [
+          {
+            "weight": 6.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 12.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 14.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 16.0,
+            "reps": 6,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1756796400,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 35.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 55.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Leg Press": [
+          {
+            "weight": 6.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 12.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 14.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 16.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 16.0,
+            "reps": 6,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1756969200,
+      "day": "Push Day",
+      "notes": null,
+      "exercises": {
+        "Bench Press": [
+          {
+            "weight": 95.0,
+            "reps": 15,
+            "warmup": false
+          },
+          {
+            "weight": 135.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 185.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 225.0,
+            "reps": 1,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 4,
+            "warmup": false
+          }
+        ],
+        "Incline Bench": [
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 145.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 155.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 165.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 170.0,
+            "reps": 3,
+            "warmup": false
+          }
+        ],
+        "Dips": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 20.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 30.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 45.0,
+            "reps": 3,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1757055600,
+      "day": "Pull Day",
+      "notes": null,
+      "exercises": {
+        "Pull-Ups": [
+          {
+            "weight": 0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 4,
+            "warmup": false
+          }
+        ],
+        "Lat Pulldown": [
+          {
+            "weight": 160.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 190.0,
+            "reps": 4,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1757142000,
+      "day": "Pull Day",
+      "notes": null,
+      "exercises": {
+        "Single-Arm Row": [
+          {
+            "weight": 65.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 85.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1757401200,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 10.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 45.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 60.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Leg Press": [
+          {
+            "weight": 8.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 7,
+            "warmup": false
+          },
+          {
+            "weight": 12.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 14.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 16.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 16.0,
+            "reps": 6,
+            "warmup": false
+          }
+        ],
+        "Bench Press": [
+          {
+            "weight": 135.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 195.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 230.0,
+            "reps": 1,
+            "warmup": false
+          },
+          {
+            "weight": 235.0,
+            "reps": 1,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 4,
+            "warmup": false
+          }
+        ],
+        "Incline Bench": [
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 155.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 165.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 170.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 4,
+            "warmup": false
+          }
+        ],
+        "Dips": [
+          {
+            "weight": 0.0,
+            "reps": 12,
+            "warmup": true
+          },
+          {
+            "weight": 30.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 45.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1757574000,
+      "day": "Pull Day",
+      "notes": null,
+      "exercises": {
+        "Single-Arm Row": [
+          {
+            "weight": 50.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 65.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          }
+        ],
+        "Pull-Ups": [
+          {
+            "weight": 15.0,
+            "reps": 3,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1757660400,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 45.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 60.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Leg Press": [
+          {
+            "weight": 8.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 7,
+            "warmup": false
+          },
+          {
+            "weight": 12.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 14.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1758092400,
+      "day": "Core Day",
+      "notes": null,
+      "exercises": {
+        "Dips": [
+          {
+            "weight": 0.0,
+            "reps": 15,
+            "warmup": true
+          },
+          {
+            "weight": 25.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 50.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1758265200,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 45.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 60.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Leg Press": [
+          {
+            "weight": 8.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 12.0,
+            "reps": 7,
+            "warmup": false
+          },
+          {
+            "weight": 14.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 16.0,
+            "reps": 6,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1758610800,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 10.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 50.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 65.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 6,
+            "warmup": false
+          }
+        ],
+        "Leg Press": [
+          {
+            "weight": 8.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 12.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 14.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 16.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 16.0,
+            "reps": 8,
+            "warmup": false
+          }
+        ],
+        "Single-Arm Row": [
+          {
+            "weight": 50.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 65.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Pull-Ups": [
+          {
+            "weight": 0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 4,
+            "warmup": false
+          }
+        ],
+        "Lat Pulldown": [
+          {
+            "weight": 160.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Bench Press": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 185.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 215.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 215.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 225.0,
+            "reps": 1,
+            "warmup": false
+          },
+          {
+            "weight": 245.0,
+            "reps": 1,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 215.0,
+            "reps": 3,
+            "warmup": false
+          }
+        ],
+        "Incline Bench": [
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 155.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 165.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 165.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 155.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Dips": [
+          {
+            "weight": 0.0,
+            "reps": 15,
+            "warmup": true
+          },
+          {
+            "weight": 30.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 45.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1758783600,
+      "day": "Push Day",
+      "notes": null,
+      "exercises": {
+        "Bench Press": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 185.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 215.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 225.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 245.0,
+            "reps": 1,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 4,
+            "warmup": false
+          }
+        ],
+        "Incline Bench": [
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 155.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 165.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 3,
+            "warmup": false
+          }
+        ],
+        "Dips": [
+          {
+            "weight": 0.0,
+            "reps": 16,
+            "warmup": true
+          },
+          {
+            "weight": 45.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1758870000,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Unknown": [
+          {
+            "weight": 45.0,
+            "reps": 4,
+            "warmup": false
+          }
+        ],
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 50.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 65.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Seated Calf Raise": [
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 160.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1759042800,
+      "day": "Pull Day",
+      "notes": null,
+      "exercises": {
+        "Single-Arm Row": [
+          {
+            "weight": 50.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 65.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          }
+        ],
+        "Pull-Ups": [
+          {
+            "weight": 25.0,
+            "reps": 2,
+            "warmup": false
+          },
+          {
+            "weight": 45.0,
+            "reps": 1,
+            "warmup": false
+          },
+          {
+            "weight": 25.0,
+            "reps": 2,
+            "warmup": false
+          }
+        ],
+        "Dumbbell Curls": [
+          {
+            "weight": 40.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 50.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 40.0,
+            "reps": 7,
+            "warmup": false
+          },
+          {
+            "weight": 45.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1759388400,
+      "day": "Push Day",
+      "notes": null,
+      "exercises": {
+        "Bench Press": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 135.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 185.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 210.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 215.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 215.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 225.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 245.0,
+            "reps": 1,
+            "warmup": false
+          },
+          {
+            "weight": 225.0,
+            "reps": 3,
+            "warmup": false
+          }
+        ],
+        "Incline Bench": [
+          {
+            "weight": 135.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 145.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 165.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 175.0,
+            "reps": 3,
+            "warmup": false
+          }
+        ],
+        "Dips": [
+          {
+            "weight": 0.0,
+            "reps": 15,
+            "warmup": true
+          }
+        ]
+      }
+    },
+    {
+      "date": 1759561200,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 25.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 50.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 65.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 65.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 40.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 20.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 0.0,
+            "reps": 5,
+            "warmup": true
+          },
+          {
+            "weight": 75.0,
+            "reps": 7,
+            "warmup": false
+          }
+        ],
+        "Leg Press": [
+          {
+            "weight": 8.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 10.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 12.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1759734000,
+      "day": "Push Day",
+      "notes": null,
+      "exercises": {
+        "Bench Press": [
+          {
+            "weight": 115.0,
+            "reps": 15,
+            "warmup": false
+          },
+          {
+            "weight": 135.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 185.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 215.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 225.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 250.0,
+            "reps": 1,
+            "warmup": false
+          },
+          {
+            "weight": 255.0,
+            "reps": 1,
+            "warmup": false
+          },
+          {
+            "weight": 225.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 225.0,
+            "reps": 3,
+            "warmup": false
+          }
+        ],
+        "Incline Bench": [
+          {
+            "weight": 135.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 165.0,
+            "reps": 4,
+            "warmup": false
+          }
+        ],
+        "Dips": [
+          {
+            "weight": 0.0,
+            "reps": 20,
+            "warmup": true
+          },
+          {
+            "weight": 45.0,
+            "reps": 8,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1759993200,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Seated Calf Raise": [
+          {
+            "weight": 70.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 80.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 80.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 80.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 90.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Hamstring Curl": [
+          {
+            "weight": 120.0,
+            "reps": 8,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1760079600,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 35.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 50.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 60.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 60.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 50.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1760338800,
+      "day": "Pull Day",
+      "notes": null,
+      "exercises": {
+        "Single-Arm Row": [
+          {
+            "weight": 50.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          }
+        ],
+        "Pull-Ups": [
+          {
+            "weight": 0,
+            "reps": 13,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 3,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1760425200,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 40.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 60.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 60.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 65.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 65.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          }
+        ],
+        "Seated Calf Raise": [
+          {
+            "weight": 70.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 90.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 90.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 90.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1760511600,
+      "day": "Push Day",
+      "notes": null,
+      "exercises": {
+        "Bench Press": [
+          {
+            "weight": 115.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 135.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 165.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 185.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 185.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 205.0,
+            "reps": 4,
+            "warmup": false
+          }
+        ],
+        "Incline Bench": [
+          {
+            "weight": 115.0,
+            "reps": 7,
+            "warmup": false
+          },
+          {
+            "weight": 145.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 145.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 155.0,
+            "reps": 3,
+            "warmup": false
+          },
+          {
+            "weight": 155.0,
+            "reps": 4,
+            "warmup": false
+          }
+        ],
+        "Dips": [
+          {
+            "weight": 0.0,
+            "reps": 20,
+            "warmup": true
+          },
+          {
+            "weight": 45.0,
+            "reps": 7,
+            "warmup": false
+          },
+          {
+            "weight": 45.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1760598000,
+      "day": "Pull Day",
+      "notes": null,
+      "exercises": {
+        "Single-Arm Row": [
+          {
+            "weight": 55.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 55.0,
+            "reps": 10,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 8,
+            "warmup": false
+          }
+        ],
+        "Bent-Over Row": [
+          {
+            "weight": 115.0,
+            "reps": 6,
+            "warmup": false
+          },
+          {
+            "weight": 165.0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 165.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Pull-Ups": [
+          {
+            "weight": 0,
+            "reps": 8,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 4,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 0,
+            "reps": 4,
+            "warmup": false
+          }
+        ]
+      }
+    },
+    {
+      "date": 1760684400,
+      "day": "Leg Day",
+      "notes": null,
+      "exercises": {
+        "Bulgarian Split Squat": [
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 0.0,
+            "reps": 10,
+            "warmup": true
+          },
+          {
+            "weight": 40.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 60.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 65.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 75.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ],
+        "Seated Calf Raise": [
+          {
+            "weight": 140.0,
+            "reps": 5,
+            "warmup": false
+          },
+          {
+            "weight": 140.0,
+            "reps": 5,
+            "warmup": false
+          }
+        ]
+      }
+    }
+  ]
+}
