@@ -256,20 +256,24 @@ class DailyWorkoutSession: ObservableObject {
             return
         }
         
-        // Sort by date (most recent first) and filter out today's workout
+        // Filter by current day, sort by date (most recent first) and exclude today
         let sortedWorkouts = savedWorkouts
             .compactMap { workout -> (date: Date, data: [String: Any])? in
                 guard let timestamp = workout["date"] as? TimeInterval else { return nil }
                 let date = Date(timeIntervalSince1970: timestamp)
                 // Skip if it's today
                 guard !Calendar.current.isDateInToday(date) else { return nil }
+                // Only include workouts matching the current selected day
+                if let workoutDay = workout["day"] as? String {
+                    guard workoutDay == day.rawValue || workoutDay.contains(day.rawValue) else { return nil }
+                }
                 return (date, workout)
             }
             .sorted { $0.date > $1.date }
         
         guard let mostRecent = sortedWorkouts.first,
               let exercisesData = mostRecent.data["exercises"] as? [String: [[String: Any]]] else {
-            print("📭 No valid previous workout to load")
+            print("📭 No previous \(day.displayName) workout found")
             return
         }
         
