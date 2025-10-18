@@ -488,7 +488,7 @@ struct TodayView: View {
                         get: { dailyWorkout.notes },
                         set: { dailyWorkout.updateNotes($0) }
                     ))
-                    .frame(minHeight: 120)
+                    .frame(minHeight: 60)
                 }
                 
                 Section {
@@ -509,15 +509,6 @@ struct TodayView: View {
                     }
                     .foregroundStyle(.red)
                     .disabled(dailyWorkout.getTotalSets() == 0)
-                }
-                
-                Section("Debug") {
-                    Button("View Saved Workouts") {
-                        showingSavedWorkouts = true
-                    }
-                    Button("Export Muscular Leg Icon") {
-                        Task { await IconExporter.exportAll() }
-                    }
                 }
             }
             .navigationTitle("")
