@@ -9,6 +9,8 @@ struct RootTabView: View {
                 .tabItem { Label("History", systemImage: "clock.arrow.circlepath") }
             ProgressViewGlobal()
                 .tabItem { Label("Progress", systemImage: "chart.xyaxis.line") }
+            MetricsView()
+                .tabItem { Label("Metrics", systemImage: "chart.line.uptrend.xyaxis") }
             TemplatesView()
                 .tabItem { Label("Templates", systemImage: "list.bullet.rectangle") }
         }
