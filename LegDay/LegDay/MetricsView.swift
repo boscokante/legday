@@ -64,7 +64,7 @@ struct MetricsView: View {
                     Section("Current Stats") {
                         if let weight = latest.weight {
                             HStack {
-                                Text("Weight")
+                                Text("Body Weight")
                                 Spacer()
                                 Text("\(weight, specifier: "%.1f") lbs")
                                     .foregroundStyle(.blue)
@@ -98,7 +98,7 @@ struct MetricsView: View {
                 // Charts Section
                 if !manager.metrics.isEmpty {
                     if manager.metrics.contains(where: { $0.weight != nil }) {
-                        Section("Weight Trend") {
+                        Section("Body Weight Trend") {
                             weightChart
                                 .frame(height: 200)
                         }
@@ -199,6 +199,7 @@ struct MetricsView: View {
         .chartYAxis {
             AxisMarks(position: .leading)
         }
+        .chartYScale(domain: 195...215)
     }
     
     private var bodyFatChart: some View {
@@ -283,10 +284,10 @@ struct AddMetricSheet: View {
                 }
                 
                 Section("Measurements") {
-                    Toggle("Weight", isOn: $trackWeight)
+                    Toggle("Body Weight", isOn: $trackWeight)
                     if trackWeight {
                         HStack {
-                            TextField("Weight", text: $weight)
+                            TextField("Body Weight", text: $weight)
                                 .keyboardType(.decimalPad)
                             Text("lbs")
                                 .foregroundStyle(.secondary)
@@ -382,10 +383,10 @@ struct EditMetricSheet: View {
                 }
                 
                 Section("Measurements") {
-                    Toggle("Weight", isOn: $trackWeight)
+                    Toggle("Body Weight", isOn: $trackWeight)
                     if trackWeight {
                         HStack {
-                            TextField("Weight", text: $weight)
+                            TextField("Body Weight", text: $weight)
                                 .keyboardType(.decimalPad)
                             Text("lbs")
                                 .foregroundStyle(.secondary)
