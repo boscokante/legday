@@ -502,66 +502,82 @@ struct TodayView: View {
     var body: some View {
         NavigationStack {
             List {
-                // Global Rest Timers Section
-                if timerManager.timer2min.isActive || timerManager.timer45sec.isActive {
-                    Section("Active Timers") {
-                        HStack(spacing: 16) {
-                            if timerManager.timer2min.isActive {
-                                VStack {
-                                    Button(action: {
-                                        timerManager.timer2min.stop()
-                                    }) {
-                                        VStack {
-                                            Text("2 MIN")
-                                                .font(.caption)
-                                                .fontWeight(.semibold)
-                                            Text(timerManager.timer2min.formattedTime)
-                                                .font(.title2)
-                                                .fontWeight(.bold)
-                                        }
-                                        .foregroundColor(.white)
-                                        .frame(maxWidth: .infinity)
-                                        .padding()
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .fill(.blue)
-                                        )
-                                    }
-                                    .buttonStyle(.plain)
-                                    
-                                    ProgressView(value: timerManager.timer2min.progress)
-                                        .progressViewStyle(LinearProgressViewStyle(tint: .blue))
-                                        .frame(height: 4)
+                // Rest Timers Section - Always visible
+                Section("Rest Timers") {
+                    HStack(spacing: 16) {
+                        // 2 Minute Timer
+                        VStack {
+                            Button(action: {
+                                if timerManager.timer2min.isActive {
+                                    timerManager.timer2min.stop()
+                                } else {
+                                    timerManager.timer2min.start()
                                 }
+                            }) {
+                                VStack {
+                                    Text("2 MIN")
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                    Text(timerManager.timer2min.formattedTime)
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                }
+                                .foregroundColor(timerManager.timer2min.isActive ? .white : .blue)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(timerManager.timer2min.isActive ? .blue : .blue.opacity(0.1))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(.blue, lineWidth: 1)
+                                        )
+                                )
                             }
+                            .buttonStyle(.plain)
+                            
+                            if timerManager.timer2min.isActive {
+                                ProgressView(value: timerManager.timer2min.progress)
+                                    .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                                    .frame(height: 4)
+                            }
+                        }
+                        
+                        // 45 Second Timer
+                        VStack {
+                            Button(action: {
+                                if timerManager.timer45sec.isActive {
+                                    timerManager.timer45sec.stop()
+                                } else {
+                                    timerManager.timer45sec.start()
+                                }
+                            }) {
+                                VStack {
+                                    Text("45 SEC")
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                    Text(timerManager.timer45sec.formattedTime)
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                }
+                                .foregroundColor(timerManager.timer45sec.isActive ? .white : .orange)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(timerManager.timer45sec.isActive ? .orange : .orange.opacity(0.1))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(.orange, lineWidth: 1)
+                                        )
+                                )
+                            }
+                            .buttonStyle(.plain)
                             
                             if timerManager.timer45sec.isActive {
-                                VStack {
-                                    Button(action: {
-                                        timerManager.timer45sec.stop()
-                                    }) {
-                                        VStack {
-                                            Text("45 SEC")
-                                                .font(.caption)
-                                                .fontWeight(.semibold)
-                                            Text(timerManager.timer45sec.formattedTime)
-                                                .font(.title2)
-                                                .fontWeight(.bold)
-                                        }
-                                        .foregroundColor(.white)
-                                        .frame(maxWidth: .infinity)
-                                        .padding()
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .fill(.orange)
-                                        )
-                                    }
-                                    .buttonStyle(.plain)
-                                    
-                                    ProgressView(value: timerManager.timer45sec.progress)
-                                        .progressViewStyle(LinearProgressViewStyle(tint: .orange))
-                                        .frame(height: 4)
-                                }
+                                ProgressView(value: timerManager.timer45sec.progress)
+                                    .progressViewStyle(LinearProgressViewStyle(tint: .orange))
+                                    .frame(height: 4)
                             }
                         }
                     }
