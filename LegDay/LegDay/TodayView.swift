@@ -156,12 +156,13 @@ class DailyWorkoutSession: ObservableObject {
         saveTodaysWorkout()
     }
     
-    func updateSet(exercise: String, index: Int, weight: Double, reps: Int, warmup: Bool) {
+    func updateSet(exercise: String, index: Int, weight: Double, reps: Int, warmup: Bool, completed: Bool) {
         guard exercises[exercise] != nil && index < exercises[exercise]!.count else { return }
         
         exercises[exercise]![index].weight = weight
         exercises[exercise]![index].reps = reps
         exercises[exercise]![index].warmup = warmup
+        exercises[exercise]![index].completed = completed
         
         saveTodaysWorkout()
         objectWillChange.send()
@@ -180,6 +181,12 @@ class DailyWorkoutSession: ObservableObject {
         exercises.values.reduce(0) { total, sets in total + sets.count }
     }
     
+    func getCompletedSets() -> Int {
+        exercises.values.reduce(0) { total, sets in 
+            total + sets.filter { $0.completed }.count 
+        }
+    }
+    
     func saveCompleteWorkout() {
         // Save current day to memory first
         saveCurrentDayToMemory()
@@ -193,8 +200,12 @@ class DailyWorkoutSession: ObservableObject {
         if !exercises.isEmpty {
             daysWorked.insert(day.rawValue)
             for (exerciseName, sets) in exercises {
-                allExercises[exerciseName] = sets.map { set in
-                    ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
+                // Only save completed sets
+                let completedSets = sets.filter { $0.completed }
+                if !completedSets.isEmpty {
+                    allExercises[exerciseName] = completedSets.map { set in
+                        ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
+                    }
                 }
             }
             if !notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -207,8 +218,12 @@ class DailyWorkoutSession: ObservableObject {
             if !data.exercises.isEmpty {
                 daysWorked.insert(workoutDay.rawValue)
                 for (exerciseName, sets) in data.exercises {
-                    allExercises[exerciseName] = sets.map { set in
-                        ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
+                    // Only save completed sets
+                    let completedSets = sets.filter { $0.completed }
+                    if !completedSets.isEmpty {
+                        allExercises[exerciseName] = completedSets.map { set in
+                            ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
+                        }
                     }
                 }
                 if !data.notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -218,7 +233,7 @@ class DailyWorkoutSession: ObservableObject {
         }
         
         guard !allExercises.isEmpty else {
-            print("⚠️ No exercises to save")
+            print("⚠️ No completed exercises to save")
             return
         }
         
@@ -331,7 +346,8 @@ class DailyWorkoutSession: ObservableObject {
                       let warmup = setDict["warmup"] as? Bool else {
                     return nil
                 }
-                return SetData(weight: weight, reps: reps, warmup: warmup)
+                // Load sets as UNCOMMITTED - user must check them off as they complete them
+                return SetData(weight: weight, reps: reps, warmup: warmup, completed: false)
             }
             if !sets.isEmpty {
                 loadedExercises[exerciseName] = sets
@@ -554,8 +570,10 @@ struct TodayView: View {
                 Section(header: HStack {
                     Text("Today's Workout")
                     Spacer()
-                    Text("\(dailyWorkout.getTotalSets()) sets total")
-                        .foregroundStyle(.secondary)
+                    let completed = dailyWorkout.getCompletedSets()
+                    let total = dailyWorkout.getTotalSets()
+                    Text("\(completed)/\(total) completed")
+                        .foregroundStyle(completed > 0 ? .green : .secondary)
                         .font(.caption)
                 }) {
                     ForEach(exercises, id: \.self) { exercise in
@@ -569,8 +587,9 @@ struct TodayView: View {
                             
                             let sets = dailyWorkout.getSets(for: exercise)
                             if !sets.isEmpty {
-                                Text("\(sets.count) sets")
-                                    .foregroundStyle(.secondary)
+                                let completedCount = sets.filter { $0.completed }.count
+                                Text("\(completedCount)/\(sets.count)")
+                                    .foregroundStyle(completedCount > 0 ? .green : .secondary)
                                     .font(.caption)
                             }
                         }
@@ -590,8 +609,8 @@ struct TodayView: View {
                         dailyWorkout.saveCompleteWorkout()
                         showingWorkoutSaved = true
                     }
-                    .disabled(dailyWorkout.getTotalSets() == 0)
-                    .foregroundStyle(dailyWorkout.getTotalSets() > 0 ? .blue : .secondary)
+                    .disabled(dailyWorkout.getCompletedSets() == 0)
+                    .foregroundStyle(dailyWorkout.getCompletedSets() > 0 ? .blue : .secondary)
                     
                     Button("Load Previous Workout") {
                         dailyWorkout.loadPreviousWorkoutManually()
@@ -642,7 +661,7 @@ struct TodayView: View {
         .alert("Workout Saved!", isPresented: $showingWorkoutSaved) {
             Button("OK") { }
         } message: {
-            Text("Your workout with \(dailyWorkout.getTotalSets()) sets has been saved!")
+            Text("Your workout with \(dailyWorkout.getCompletedSets()) completed sets has been saved!")
         }
         // Timer alerts on Today screen
         .alert("2-Minute Timer Finished!", isPresented: $timerManager.timer2min.isFinished) {

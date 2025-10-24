@@ -5,6 +5,7 @@ struct SetData: Identifiable, Equatable, Codable {
     var weight: Double
     var reps: Int
     var warmup: Bool
+    var completed: Bool = false  // Only save sets marked as completed
 }
 
 struct ExerciseSessionSheet: View {
@@ -131,13 +132,18 @@ struct ExerciseSessionSheet: View {
                             Text("Sets for \(exerciseName):")
                                 .font(.headline)
                             Spacer()
-                            Text("\(sets.count) sets")
-                                .foregroundStyle(.secondary)
+                            let completedCount = sets.filter { $0.completed }.count
+                            Text("\(completedCount)/\(sets.count) completed")
+                                .foregroundStyle(completedCount > 0 ? .green : .secondary)
                         }
                         
                         if !sets.isEmpty {
                             ForEach(Array(sets.enumerated()), id: \.element.id) { index, set in
                                 HStack {
+                                    Image(systemName: set.completed ? "checkmark.circle.fill" : "circle")
+                                        .foregroundStyle(set.completed ? .green : .gray)
+                                        .font(.caption)
+                                    
                                     Text("Set \(index + 1):")
                                         .font(.subheadline)
                                         .foregroundStyle(.secondary)
@@ -146,21 +152,21 @@ struct ExerciseSessionSheet: View {
                                         Text("\(set.weight, specifier: "%.0f") lbs × \(set.reps) reps")
                                             .font(.subheadline)
                                     } else {
-                                        Text("Not completed")
+                                        Text("Not set")
                                             .font(.subheadline)
                                             .foregroundStyle(.secondary)
                                             .italic()
                                     }
                                     
                                     if set.warmup {
-                                        Text("(Warmup)")
+                                        Text("(W)")
                                             .font(.caption)
                                             .foregroundStyle(.orange)
                                     }
                                     
                                     Spacer()
                                     
-                                    if set.weight > 0 && set.reps > 0 {
+                                    if set.completed && set.weight > 0 && set.reps > 0 {
                                         let setVolume = set.weight * Double(set.reps)
                                         Text("\(setVolume, specifier: "%.0f") vol")
                                             .font(.caption)
@@ -172,7 +178,8 @@ struct ExerciseSessionSheet: View {
                             
                             Divider()
                             
-                            let totalVolume = sets.reduce(0.0) { total, set in
+                            let completedSets = sets.filter { $0.completed }
+                            let totalVolume = completedSets.reduce(0.0) { total, set in
                                 total + (set.weight * Double(set.reps))
                             }
                             
@@ -190,13 +197,15 @@ struct ExerciseSessionSheet: View {
                         Divider()
                         
                         HStack {
-                            Text("Total sets today:")
+                            Text("All exercises today:")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                             Spacer()
-                            Text("\(dailyWorkout.getTotalSets())")
+                            let totalCompleted = dailyWorkout.exercises.values.flatMap { $0 }.filter { $0.completed }.count
+                            let totalSets = dailyWorkout.getTotalSets()
+                            Text("\(totalCompleted)/\(totalSets) completed")
                                 .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(totalCompleted > 0 ? .green : .secondary)
                         }
                     }
                     .padding(.vertical, 4)
@@ -233,12 +242,25 @@ struct EditableSetRowView: View {
     @State private var weight: Double = 0
     @State private var reps: Int = 10
     @State private var isWarmup: Bool = false
+    @State private var isCompleted: Bool = false
     
     var body: some View {
         HStack(spacing: 8) {
+            // Completion checkbox
+            Button(action: {
+                isCompleted.toggle()
+                updateSet()
+            }) {
+                Image(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(isCompleted ? .green : .gray)
+                    .font(.title3)
+            }
+            .buttonStyle(.plain)
+            
             Text("#\(setIndex + 1)")
                 .frame(width: 30, alignment: .leading)
                 .font(.body.weight(.medium))
+                .opacity(isCompleted ? 1.0 : 0.5)
             
             // Weight field with label
             HStack(spacing: 4) {
@@ -250,15 +272,18 @@ struct EditableSetRowView: View {
                     .onChange(of: weight) { _, newValue in
                         updateSet()
                     }
+                    .opacity(isCompleted ? 1.0 : 0.5)
                 Text("lbs")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .frame(width: 28, alignment: .leading)
+                    .opacity(isCompleted ? 1.0 : 0.5)
             }
             
             Text("×")
                 .foregroundStyle(.secondary)
                 .font(.title3)
+                .opacity(isCompleted ? 1.0 : 0.5)
             
             // Reps field with label
             HStack(spacing: 4) {
@@ -269,10 +294,12 @@ struct EditableSetRowView: View {
                         updateSet()
                     }
                     .frame(width: 50)
+                    .opacity(isCompleted ? 1.0 : 0.5)
                 Text("reps")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .frame(width: 32, alignment: .leading)
+                    .opacity(isCompleted ? 1.0 : 0.5)
             }
             
             if isWarmup { 
@@ -280,6 +307,7 @@ struct EditableSetRowView: View {
                     .foregroundStyle(.orange)
                     .font(.caption)
                     .fontWeight(.bold)
+                    .opacity(isCompleted ? 1.0 : 0.5)
             }
         }
         .onAppear {
@@ -294,6 +322,7 @@ struct EditableSetRowView: View {
             weight = set.weight
             reps = set.reps
             isWarmup = set.warmup
+            isCompleted = set.completed
         }
     }
     
@@ -303,7 +332,8 @@ struct EditableSetRowView: View {
             index: setIndex,
             weight: weight,
             reps: reps,
-            warmup: isWarmup
+            warmup: isWarmup,
+            completed: isCompleted
         )
     }
 }
