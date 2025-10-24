@@ -16,6 +16,7 @@ struct ExerciseSessionSheet: View {
     @ObservedObject private var timerManager = TimerManager.shared
     
     @State private var appearedOnce = false
+    @FocusState private var focusedField: Bool
     
     var sets: [SetData] {
         dailyWorkout.getSets(for: exerciseName)
@@ -110,7 +111,8 @@ struct ExerciseSessionSheet: View {
                         EditableSetRowView(
                             exerciseName: exerciseName,
                             setIndex: index,
-                            dailyWorkout: dailyWorkout
+                            dailyWorkout: dailyWorkout,
+                            focusedField: $focusedField
                         )
                     }
                     .onDelete(perform: deleteSets)
@@ -213,6 +215,14 @@ struct ExerciseSessionSheet: View {
             }
             .navigationTitle(exerciseName)
             .toolbar {
+                ToolbarItem(placement: .keyboard) {
+                    HStack {
+                        Spacer()
+                        Button("Dismiss Keyboard") {
+                            focusedField = false
+                        }
+                    }
+                }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                 }
@@ -238,6 +248,7 @@ struct EditableSetRowView: View {
     let exerciseName: String
     let setIndex: Int
     @ObservedObject var dailyWorkout: DailyWorkoutSession
+    @FocusState.Binding var focusedField: Bool
     
     @State private var weight: Double = 0
     @State private var reps: Int = 10
@@ -269,6 +280,7 @@ struct EditableSetRowView: View {
                     .foregroundStyle(.blue)
                     .font(.body.weight(.semibold))
                     .keyboardType(.decimalPad)
+                    .focused($focusedField)
                     .onChange(of: weight) { _, newValue in
                         updateSet()
                     }
@@ -290,6 +302,7 @@ struct EditableSetRowView: View {
                 TextField("0", value: $reps, format: .number)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .keyboardType(.numberPad)
+                    .focused($focusedField)
                     .onChange(of: reps) { _, newValue in
                         updateSet()
                     }
