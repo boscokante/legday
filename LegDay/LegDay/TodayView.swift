@@ -679,21 +679,7 @@ struct TodayView: View {
         } message: {
             Text("Your workout with \(dailyWorkout.getCompletedSets()) completed sets has been saved!")
         }
-        // Timer alerts on Today screen
-        .alert("2-Minute Timer Finished!", isPresented: $timerManager.timer2min.isFinished) {
-            Button("OK") {
-                timerManager.timer2min.isFinished = false
-            }
-        } message: {
-            Text("Your 2-minute rest period is complete!")
-        }
-        .alert("45-Second Timer Finished!", isPresented: $timerManager.timer45sec.isFinished) {
-            Button("OK") {
-                timerManager.timer45sec.isFinished = false
-            }
-        } message: {
-            Text("Your 45-second rest period is complete!")
-        }
+        // Removed timer-finished alerts so finishing a timer only plays a sound and keeps context
     }
 }
 
