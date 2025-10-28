@@ -27,7 +27,7 @@ struct ExerciseSessionSheet: View {
             List {
                 // Rest Timer Section
                 Section("Rest Timers") {
-                    HStack(spacing: 16) {
+                    HStack(spacing: 12) {
                         // 2 Minute Timer
                         VStack {
                             Button(action: {
@@ -100,6 +100,44 @@ struct ExerciseSessionSheet: View {
                             if timerManager.timer45sec.isActive {
                                 ProgressView(value: timerManager.timer45sec.progress)
                                     .progressViewStyle(LinearProgressViewStyle(tint: .orange))
+                                    .frame(height: 4)
+                            }
+                        }
+
+                        // 30 Second Timer
+                        VStack {
+                            Button(action: {
+                                if timerManager.timer30sec.isActive {
+                                    timerManager.timer30sec.stop()
+                                } else {
+                                    timerManager.timer30sec.start()
+                                }
+                            }) {
+                                VStack {
+                                    Text("30 SEC")
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                    Text(timerManager.timer30sec.formattedTime)
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                }
+                                .foregroundColor(timerManager.timer30sec.isActive ? .white : .purple)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(timerManager.timer30sec.isActive ? .purple : .purple.opacity(0.1))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(.purple, lineWidth: 1)
+                                        )
+                                )
+                            }
+                            .buttonStyle(.plain)
+                            
+                            if timerManager.timer30sec.isActive {
+                                ProgressView(value: timerManager.timer30sec.progress)
+                                    .progressViewStyle(LinearProgressViewStyle(tint: .purple))
                                     .frame(height: 4)
                             }
                         }

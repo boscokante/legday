@@ -101,6 +101,7 @@ class RestTimer: ObservableObject {
 class TimerManager: ObservableObject {
     @Published var timer2min = RestTimer(seconds: 120, name: "2 Min", soundID: 1005)  // Tri-tone (once)
     @Published var timer45sec = RestTimer(seconds: 45, name: "45 Sec", soundID: 1016, soundRepeatCount: 3)  // Alert tone (3x)
+    @Published var timer30sec = RestTimer(seconds: 30, name: "30 Sec", soundID: 1022, soundRepeatCount: 2)  // Beep (2x)
     
     static let shared = TimerManager()
     
@@ -115,6 +116,12 @@ class TimerManager: ObservableObject {
         }.store(in: &cancellables)
         
         timer45sec.objectWillChange.sink { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.objectWillChange.send()
+            }
+        }.store(in: &cancellables)
+
+        timer30sec.objectWillChange.sink { [weak self] _ in
             DispatchQueue.main.async {
                 self?.objectWillChange.send()
             }
@@ -504,7 +511,7 @@ struct TodayView: View {
             List {
                 // Rest Timers Section - Always visible
                 Section("Rest Timers") {
-                    HStack(spacing: 16) {
+                    HStack(spacing: 12) {
                         // 2 Minute Timer
                         VStack {
                             Button(action: {
@@ -577,6 +584,44 @@ struct TodayView: View {
                             if timerManager.timer45sec.isActive {
                                 ProgressView(value: timerManager.timer45sec.progress)
                                     .progressViewStyle(LinearProgressViewStyle(tint: .orange))
+                                    .frame(height: 4)
+                            }
+                        }
+
+                        // 30 Second Timer
+                        VStack {
+                            Button(action: {
+                                if timerManager.timer30sec.isActive {
+                                    timerManager.timer30sec.stop()
+                                } else {
+                                    timerManager.timer30sec.start()
+                                }
+                            }) {
+                                VStack {
+                                    Text("30 SEC")
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                    Text(timerManager.timer30sec.formattedTime)
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                }
+                                .foregroundColor(timerManager.timer30sec.isActive ? .white : .purple)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(timerManager.timer30sec.isActive ? .purple : .purple.opacity(0.1))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(.purple, lineWidth: 1)
+                                        )
+                                )
+                            }
+                            .buttonStyle(.plain)
+                            
+                            if timerManager.timer30sec.isActive {
+                                ProgressView(value: timerManager.timer30sec.progress)
+                                    .progressViewStyle(LinearProgressViewStyle(tint: .purple))
                                     .frame(height: 4)
                             }
                         }
