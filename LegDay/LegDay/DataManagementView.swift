@@ -9,6 +9,7 @@ struct DataManagementView: View {
     @State private var errorMessage = ""
     @State private var exportURL: URL?
     @State private var showingShareSheet = false
+    @State private var isExporting = false
     
     var body: some View {
         NavigationStack {
@@ -59,9 +60,22 @@ struct DataManagementView: View {
             }
             .navigationTitle("Data Management")
         }
-        .sheet(isPresented: $showingShareSheet) {
-            if let url = exportURL {
-                ShareSheet(items: [url])
+        .fileExporter(
+            isPresented: $showingShareSheet,
+            document: exportURL.map { LegDayDocument(url: $0) },
+            contentType: UTType(filenameExtension: "legday") ?? .data,
+            defaultFilename: {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+                return "LegDay_Backup_\(dateFormatter.string(from: Date())).legday"
+            }()
+        ) { result in
+            switch result {
+            case .success:
+                showingExportSuccess = true
+            case .failure(let error):
+                errorMessage = "Export failed: \(error.localizedDescription)"
+                showingError = true
             }
         }
         .fileImporter(
@@ -249,15 +263,32 @@ struct DataManagementView: View {
     }
 }
 
-struct ShareSheet: UIViewControllerRepresentable {
-    let items: [Any]
-    
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        let controller = UIActivityViewController(activityItems: items, applicationActivities: nil)
-        return controller
+import UniformTypeIdentifiers
+
+struct LegDayDocument: FileDocument {
+    static var readableContentTypes: [UTType] {
+        [UTType(filenameExtension: "legday") ?? .data]
     }
     
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+    var url: URL
+    
+    init(url: URL) {
+        self.url = url
+    }
+    
+    init(configuration: ReadConfiguration) throws {
+        guard let data = configuration.file.regularFileContents else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("temp.legday")
+        try data.write(to: tempURL)
+        self.url = tempURL
+    }
+    
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        let data = try Data(contentsOf: url)
+        return FileWrapper(regularFileWithContents: data)
+    }
 }
 
 struct DataManagementView_Previews: PreviewProvider {
