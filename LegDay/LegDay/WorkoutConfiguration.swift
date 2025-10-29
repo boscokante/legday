@@ -170,12 +170,14 @@ class WorkoutConfigManager: ObservableObject {
             exercises: exercises,
             isDefault: false
         )
+        objectWillChange.send()
         workoutDays.append(newDay)
         saveData()
     }
     
     func updateWorkoutDay(id: String, name: String, exercises: [String]) {
         if let index = workoutDays.firstIndex(where: { $0.id == id }) {
+            objectWillChange.send()
             workoutDays[index].name = name
             workoutDays[index].exercises = exercises
             saveData()
@@ -186,6 +188,7 @@ class WorkoutConfigManager: ObservableObject {
         if let index = workoutDays.firstIndex(where: { $0.id == id }) {
             // Don't allow deletion of default days
             if !workoutDays[index].isDefault {
+                objectWillChange.send()
                 workoutDays.remove(at: index)
                 saveData()
             }
@@ -200,6 +203,7 @@ class WorkoutConfigManager: ObservableObject {
     
     func addExercise(name: String) {
         if !allExercises.contains(name) {
+            objectWillChange.send()
             allExercises.append(name)
             allExercises.sort()
             saveData()
@@ -207,6 +211,7 @@ class WorkoutConfigManager: ObservableObject {
     }
     
     func deleteExercise(name: String) {
+        objectWillChange.send()
         allExercises.removeAll { $0 == name }
         // Remove from all workout days
         for i in 0..<workoutDays.count {
@@ -217,6 +222,7 @@ class WorkoutConfigManager: ObservableObject {
     
     func updateExercise(oldName: String, newName: String) {
         if let index = allExercises.firstIndex(of: oldName) {
+            objectWillChange.send()
             allExercises[index] = newName
             allExercises.sort()
             

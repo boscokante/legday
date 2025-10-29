@@ -483,6 +483,7 @@ struct TodayView: View {
     @Environment(\.managedObjectContext) private var ctx
     @StateObject private var dailyWorkout = DailyWorkoutSession()
     @ObservedObject private var timerManager = TimerManager.shared
+    @ObservedObject private var configManager = WorkoutConfigManager.shared
     @State private var selectedExercise: ExerciseSelection?
     @State private var showingSavedWorkouts: Bool = false
     @State private var showingWorkoutSaved: Bool = false
@@ -490,7 +491,7 @@ struct TodayView: View {
     @State private var newExerciseName = ""
 
     var exercises: [String] {
-        return WorkoutConfigManager.shared.getExercisesForDay(dayId: dailyWorkout.dayId)
+        return configManager.getExercisesForDay(dayId: dailyWorkout.dayId)
     }
     
     private func addExerciseToCurrentDay(_ exerciseName: String) {
