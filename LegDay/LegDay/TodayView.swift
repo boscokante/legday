@@ -516,6 +516,24 @@ struct TodayView: View {
         // Clear the input field
         newExerciseName = ""
     }
+    
+    private func removeExerciseFromCurrentDay(_ exerciseName: String) {
+        let configManager = WorkoutConfigManager.shared
+        
+        // Remove from current day's exercise list
+        if let currentDay = configManager.getWorkoutDay(id: dailyWorkout.dayId) {
+            var updatedExercises = currentDay.exercises
+            updatedExercises.removeAll { $0 == exerciseName }
+            configManager.updateWorkoutDay(
+                id: dailyWorkout.dayId,
+                name: currentDay.name,
+                exercises: updatedExercises
+            )
+        }
+        
+        // Also remove any sets for this exercise from the current workout
+        dailyWorkout.exercises.removeValue(forKey: exerciseName)
+    }
 
     var body: some View {
         NavigationStack {
@@ -664,6 +682,14 @@ struct TodayView: View {
                                     .foregroundStyle(completedCount > 0 ? .green : .secondary)
                                     .font(.caption)
                             }
+                            
+                            Button(action: {
+                                removeExerciseFromCurrentDay(exercise)
+                            }) {
+                                Image(systemName: "minus.circle.fill")
+                                    .foregroundColor(.red)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                     
