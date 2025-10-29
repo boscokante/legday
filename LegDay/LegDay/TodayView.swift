@@ -486,9 +486,34 @@ struct TodayView: View {
     @State private var selectedExercise: ExerciseSelection?
     @State private var showingSavedWorkouts: Bool = false
     @State private var showingWorkoutSaved: Bool = false
+    @State private var showingAddExercise = false
+    @State private var newExerciseName = ""
 
     var exercises: [String] {
         return WorkoutConfigManager.shared.getExercisesForDay(dayId: dailyWorkout.dayId)
+    }
+    
+    private func addExerciseToCurrentDay(_ exerciseName: String) {
+        let configManager = WorkoutConfigManager.shared
+        
+        // Add to master exercise list if not already there
+        configManager.addExercise(name: exerciseName)
+        
+        // Add to current day's exercise list
+        if let currentDay = configManager.getWorkoutDay(id: dailyWorkout.dayId) {
+            var updatedExercises = currentDay.exercises
+            if !updatedExercises.contains(exerciseName) {
+                updatedExercises.append(exerciseName)
+                configManager.updateWorkoutDay(
+                    id: dailyWorkout.dayId,
+                    name: currentDay.name,
+                    exercises: updatedExercises
+                )
+            }
+        }
+        
+        // Clear the input field
+        newExerciseName = ""
     }
 
     var body: some View {
@@ -640,6 +665,15 @@ struct TodayView: View {
                             }
                         }
                     }
+                    
+                    // Add Exercise Button
+                    Button(action: { showingAddExercise = true }) {
+                        HStack {
+                            Image(systemName: "plus.circle.fill")
+                            Text("Add Exercise")
+                        }
+                        .foregroundColor(.blue)
+                    }
                 }
                 
                 Section("Notes") {
@@ -709,7 +743,50 @@ struct TodayView: View {
         } message: {
             Text("Your workout with \(dailyWorkout.getCompletedSets()) completed sets has been saved!")
         }
+        .sheet(isPresented: $showingAddExercise) {
+            AddExerciseQuickSheet(
+                exerciseName: $newExerciseName,
+                onSave: { exerciseName in
+                    addExerciseToCurrentDay(exerciseName)
+                }
+            )
+        }
         // Removed timer-finished alerts so finishing a timer only plays a sound and keeps context
+    }
+}
+
+// MARK: - Add Exercise Quick Sheet
+
+struct AddExerciseQuickSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @Binding var exerciseName: String
+    let onSave: (String) -> Void
+    
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Exercise Name") {
+                    TextField("Enter exercise name", text: $exerciseName)
+                        .textFieldStyle(.roundedBorder)
+                }
+            }
+            .navigationTitle("Add Exercise")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Add") {
+                        onSave(exerciseName)
+                        dismiss()
+                    }
+                    .disabled(exerciseName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            }
+        }
     }
 }
 
