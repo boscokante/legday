@@ -236,6 +236,76 @@ class WorkoutConfigManager: ObservableObject {
         }
     }
     
+    // MARK: - Restore Defaults
+    private func defaultExercisesMap() -> [String: [String]] {
+        return [
+            "Leg Day": [
+                "Bulgarian Split Squat",
+                "Leg Press",
+                "Single-Leg Extension",
+                "Hamstring Curl",
+                "Standing Calf Raise",
+                "Seated Calf Raise",
+                "Box Jumps"
+            ],
+            "Push Day": [
+                "Bench Press",
+                "Incline Bench",
+                "Dips"
+            ],
+            "Pull Day": [
+                "Single-Arm Row",
+                "Single-Arm Dumbbell Row",
+                "Pull-Ups",
+                "Lat Pulldown",
+                "Dumbbell Curls"
+            ],
+            "Core Day": [
+                "Watkins Core Program",
+                "Cable Crunches",
+                "Hanging Knee Raises (Pike)"
+            ],
+            "Achilles Rehab Heavy": [
+                "Single Leg Heel Raises",
+                "Standing Calf Stretch",
+                "Band Walks (Ankles)",
+                "Single Leg Stance on Foam"
+            ],
+            "Achilles Rehab Light": [
+                "Standing Calf Isometrics",
+                "Sitting Calf Isometrics"
+            ],
+        ]
+    }
+
+    @discardableResult
+    func restoreDefaultExercises(forDayId dayId: String) -> Bool {
+        guard let index = workoutDays.firstIndex(where: { $0.id == dayId }) else { return false }
+        let day = workoutDays[index]
+        guard day.isDefault, let defaults = defaultExercisesMap()[day.name] else { return false }
+        objectWillChange.send()
+        workoutDays[index].exercises = defaults
+        for ex in defaults { if !allExercises.contains(ex) { allExercises.append(ex) } }
+        allExercises.sort()
+        saveData()
+        return true
+    }
+
+    func restoreAllDefaultExercises() {
+        objectWillChange.send()
+        let map = defaultExercisesMap()
+        for i in 0..<workoutDays.count {
+            let day = workoutDays[i]
+            if day.isDefault, let defaults = map[day.name] {
+                workoutDays[i].exercises = defaults
+            }
+        }
+        var set = Set(allExercises)
+        for exs in map.values { for ex in exs { set.insert(ex) } }
+        allExercises = Array(set).sorted()
+        saveData()
+    }
+    
     // MARK: - Helper Methods
     
     func getExercisesForDay(dayId: String) -> [String] {

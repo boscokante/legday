@@ -489,6 +489,7 @@ struct TodayView: View {
     @State private var showingWorkoutSaved: Bool = false
     @State private var showingAddExercise = false
     @State private var newExerciseName = ""
+    @State private var confirmRestoreDefaults = false
 
     var exercises: [String] {
         return configManager.getExercisesForDay(dayId: dailyWorkout.dayId)
@@ -752,6 +753,10 @@ struct TodayView: View {
                                 dailyWorkout.updateDay(dayConfig.id)
                             }
                         }
+                        Divider()
+                        Button("Restore default exercises") {
+                            confirmRestoreDefaults = true
+                        }
                     }
                 }
             }
@@ -777,6 +782,14 @@ struct TodayView: View {
                     addExerciseToCurrentDay(exerciseName)
                 }
             )
+        }
+        .alert("Restore defaults?", isPresented: $confirmRestoreDefaults) {
+            Button("Cancel", role: .cancel) {}
+            Button("Restore", role: .destructive) {
+                _ = WorkoutConfigManager.shared.restoreDefaultExercises(forDayId: dailyWorkout.dayId)
+            }
+        } message: {
+            Text("This will replace today's exercise list with the default set for \(dailyWorkout.dayName).")
         }
         // Removed timer-finished alerts so finishing a timer only plays a sound and keeps context
     }
