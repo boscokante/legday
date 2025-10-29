@@ -1,9 +1,17 @@
 import SwiftUI
 import Charts
 
+enum ViewMode: String, CaseIterable {
+    case exercise = "Exercise"
+    case day = "Workout Day"
+}
+
 struct ProgressViewGlobal: View {
     @State private var workouts: [[String: Any]] = []
     @State private var selectedExercise: String = "Bulgarian Split Squat"
+    @State private var selectedDay: String = "Leg Day"
+    @State private var viewMode: ViewMode = .exercise
+    @ObservedObject private var configManager = WorkoutConfigManager.shared
     
     let exerciseOptions = [
         "Bulgarian Split Squat", "Leg Press", "Bench Press", "Incline Bench",
@@ -14,23 +22,49 @@ struct ProgressViewGlobal: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    // Exercise Picker
-                    Picker("Exercise", selection: $selectedExercise) {
-                        ForEach(exerciseOptions, id: \.self) { exercise in
-                            Text(exercise).tag(exercise)
+                    // View Mode Picker
+                    Picker("View By", selection: $viewMode) {
+                        ForEach(ViewMode.allCases, id: \.self) { mode in
+                            Text(mode.rawValue).tag(mode)
                         }
                     }
-                    .pickerStyle(.menu)
+                    .pickerStyle(.segmented)
                     .padding(.horizontal)
                     
-                    // Stats Cards
-                    statsCardsView
-                    
-                    // Volume Progression Chart
-                    volumeChartView
-                    
-                    // Consistency Heatmap
-                    consistencyHeatmapView
+                    if viewMode == .exercise {
+                        // Exercise Picker
+                        Picker("Exercise", selection: $selectedExercise) {
+                            ForEach(exerciseOptions, id: \.self) { exercise in
+                                Text(exercise).tag(exercise)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .padding(.horizontal)
+                        
+                        // Stats Cards
+                        statsCardsView
+                        
+                        // Volume Progression Chart
+                        volumeChartView
+                        
+                        // Consistency Heatmap
+                        consistencyHeatmapView
+                    } else {
+                        // Day Picker
+                        Picker("Workout Day", selection: $selectedDay) {
+                            ForEach(configManager.workoutDays, id: \.id) { day in
+                                Text(day.name).tag(day.name)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .padding(.horizontal)
+                        
+                        // Day Stats Cards
+                        dayStatsCardsView
+                        
+                        // Day Consistency Heatmap
+                        dayConsistencyHeatmapView
+                    }
                 }
                 .padding(.bottom, 20)
             }
@@ -311,6 +345,135 @@ struct StatCard: View {
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(12)
+    }
+}
+
+// MARK: - Day Level Statistics
+
+extension ProgressViewGlobal {
+    private var dayStatsCardsView: some View {
+        HStack(spacing: 12) {
+            StatCard(
+                title: "Times Completed",
+                value: "\(dayWorkoutCount)",
+                subtitle: "Last 30 days",
+                color: .green
+            )
+            
+            StatCard(
+                title: "Total Volume",
+                value: formatVolume(dayTotalVolume),
+                subtitle: "Last 30 days",
+                color: .blue
+            )
+            
+            StatCard(
+                title: "Consistency",
+                value: "\(Int(dayConsistency * 100))%",
+                subtitle: "Last 30 days",
+                color: .orange
+            )
+        }
+        .padding(.horizontal)
+    }
+    
+    private var dayConsistencyHeatmapView: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Workout Consistency - \(selectedDay)")
+                .font(.headline)
+                .padding(.horizontal)
+            
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 4) {
+                ForEach(dayHeatmapData, id: \.date) { day in
+                    Rectangle()
+                        .fill(day.hasWorkout ? (day.intensity > 0.7 ? Color.green : Color.blue) : Color.gray.opacity(0.3))
+                        .frame(width: 20, height: 20)
+                        .cornerRadius(4)
+                }
+            }
+            .padding(.horizontal)
+            
+            HStack {
+                Text("Less")
+                Spacer()
+                Text("More")
+            }
+            .font(.caption)
+            .foregroundColor(.secondary)
+            .padding(.horizontal)
+        }
+        .padding(.vertical)
+        .background(Color(.systemGray6))
+        .cornerRadius(12)
+        .padding(.horizontal)
+    }
+    
+    private var dayWorkoutCount: Int {
+        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
+        return workouts.filter { workout in
+            guard let timestamp = workout["date"] as? TimeInterval,
+                  let day = workout["day"] as? String else { return false }
+            let workoutDate = Date(timeIntervalSince1970: timestamp)
+            return workoutDate >= thirtyDaysAgo && day == selectedDay
+        }.count
+    }
+    
+    private var dayTotalVolume: Double {
+        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
+        return workouts.filter { workout in
+            guard let timestamp = workout["date"] as? TimeInterval,
+                  let day = workout["day"] as? String else { return false }
+            let workoutDate = Date(timeIntervalSince1970: timestamp)
+            return workoutDate >= thirtyDaysAgo && day == selectedDay
+        }.compactMap { workout in
+            guard let exercises = workout["exercises"] as? [String: [[String: Any]]] else { return 0.0 }
+            return exercises.values.flatMap { $0 }.compactMap { set in
+                guard let weight = set["weight"] as? Double,
+                      let reps = set["reps"] as? Int else { return 0.0 }
+                return weight * Double(reps)
+            }.reduce(0, +)
+        }.reduce(0, +)
+    }
+    
+    private var dayConsistency: Double {
+        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
+        let totalDays = 30
+        let workoutDays = Set<Date>(workouts.filter { workout in
+            guard let timestamp = workout["date"] as? TimeInterval,
+                  let day = workout["day"] as? String else { return false }
+            let workoutDate = Date(timeIntervalSince1970: timestamp)
+            return workoutDate >= thirtyDaysAgo && day == selectedDay
+        }.compactMap { workout in
+            guard let timestamp = workout["date"] as? TimeInterval else { return nil }
+            return Calendar.current.startOfDay(for: Date(timeIntervalSince1970: timestamp))
+        })
+        
+        return Double(workoutDays.count) / Double(totalDays)
+    }
+    
+    private var dayHeatmapData: [HeatmapDay] {
+        let calendar = Calendar.current
+        let today = Date()
+        let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: today) ?? today
+        
+        var days: [HeatmapDay] = []
+        for i in 0..<30 {
+            guard let date = calendar.date(byAdding: .day, value: i, to: thirtyDaysAgo) else { continue }
+            
+            let dayWorkouts = workouts.filter { workout in
+                guard let timestamp = workout["date"] as? TimeInterval,
+                      let day = workout["day"] as? String else { return false }
+                let workoutDate = Date(timeIntervalSince1970: timestamp)
+                return calendar.isDate(workoutDate, inSameDayAs: date) && day == selectedDay
+            }
+            
+            let hasWorkout = !dayWorkouts.isEmpty
+            let intensity = dayWorkouts.isEmpty ? 0.0 : min(1.0, Double(dayWorkouts.count) / 3.0) // Normalize to 0-1
+            
+            days.append(HeatmapDay(date: date, hasWorkout: hasWorkout, intensity: intensity))
+        }
+        
+        return days
     }
 }
 

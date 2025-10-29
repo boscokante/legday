@@ -129,29 +129,32 @@ class TimerManager: ObservableObject {
     }
 }
 
-enum WorkoutDay: String, CaseIterable, Codable {
-    case leg = "Leg Day"
-    case push = "Push Day"
-    case pull = "Pull Day"
-    case core = "Core Day"
-    
-    var displayName: String { rawValue }
-}
+// WorkoutDay enum removed - now using WorkoutConfigManager
 
 // Daily workout session model
 class DailyWorkoutSession: ObservableObject {
     @Published var exercises: [String: [SetData]] = [:]
-    @Published var day: WorkoutDay = .leg
+    @Published var dayId: String = ""
+    @Published var dayName: String = ""
     @Published var notes: String = ""
     private let dateKey: String
     
     // Store in-progress workouts for each day separately
-    private var dayWorkouts: [WorkoutDay: (exercises: [String: [SetData]], notes: String)] = [:]
+    private var dayWorkouts: [String: (exercises: [String: [SetData]], notes: String)] = [:]
+    
+    @ObservedObject private var configManager = WorkoutConfigManager.shared
     
     init() {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         self.dateKey = formatter.string(from: Date())
+        
+        // Initialize with default day
+        self.dayId = configManager.getDefaultDayId()
+        if let dayConfig = configManager.getWorkoutDay(id: dayId) {
+            self.dayName = dayConfig.name
+        }
+        
         loadTodaysWorkout()
     }
     
@@ -205,7 +208,7 @@ class DailyWorkoutSession: ObservableObject {
         
         // Add current day if it has exercises
         if !exercises.isEmpty {
-            daysWorked.insert(day.rawValue)
+            daysWorked.insert(dayName)
             for (exerciseName, sets) in exercises {
                 // Only save completed sets
                 let completedSets = sets.filter { $0.completed }
@@ -216,14 +219,16 @@ class DailyWorkoutSession: ObservableObject {
                 }
             }
             if !notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                allNotes.append("\(day.displayName): \(notes)")
+                allNotes.append("\(dayName): \(notes)")
             }
         }
         
         // Add other days from memory cache
-        for (workoutDay, data) in dayWorkouts where workoutDay != day {
+        for (workoutDayId, data) in dayWorkouts where workoutDayId != dayId {
             if !data.exercises.isEmpty {
-                daysWorked.insert(workoutDay.rawValue)
+                if let dayConfig = configManager.getWorkoutDay(id: workoutDayId) {
+                    daysWorked.insert(dayConfig.name)
+                }
                 for (exerciseName, sets) in data.exercises {
                     // Only save completed sets
                     let completedSets = sets.filter { $0.completed }
@@ -234,7 +239,9 @@ class DailyWorkoutSession: ObservableObject {
                     }
                 }
                 if !data.notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    allNotes.append("\(workoutDay.displayName): \(data.notes)")
+                    if let dayConfig = configManager.getWorkoutDay(id: workoutDayId) {
+                        allNotes.append("\(dayConfig.name): \(data.notes)")
+                    }
                 }
             }
         }
@@ -281,10 +288,10 @@ class DailyWorkoutSession: ObservableObject {
     }
     
     private func clearTempStorage() {
-        for workoutDay in WorkoutDay.allCases {
-            let dayKey = "tempWorkout_\(dateKey)_\(workoutDay.rawValue)"
+        for workoutDay in configManager.workoutDays {
+            let dayKey = "tempWorkout_\(dateKey)_\(workoutDay.id)"
             UserDefaults.standard.removeObject(forKey: dayKey)
-            UserDefaults.standard.removeObject(forKey: "tempNotes_\(dateKey)_\(workoutDay.rawValue)")
+            UserDefaults.standard.removeObject(forKey: "tempNotes_\(dateKey)_\(workoutDay.id)")
         }
     }
     
@@ -294,7 +301,7 @@ class DailyWorkoutSession: ObservableObject {
             UserDefaults.standard.set(encoded, forKey: "workout_\(dateKey)")
         }
         UserDefaults.standard.set(notes, forKey: "workoutNotes_\(dateKey)")
-        UserDefaults.standard.set(day.rawValue, forKey: "workoutDay_\(dateKey)")
+        UserDefaults.standard.set(dayId, forKey: "workoutDay_\(dateKey)")
     }
     
     private func loadTodaysWorkout() {
@@ -310,9 +317,11 @@ class DailyWorkoutSession: ObservableObject {
         if let savedNotes = UserDefaults.standard.string(forKey: "workoutNotes_\(dateKey)") {
             notes = savedNotes
         }
-        if let savedDay = UserDefaults.standard.string(forKey: "workoutDay_\(dateKey)"),
-           let parsed = WorkoutDay(rawValue: savedDay) {
-            day = parsed
+        if let savedDayId = UserDefaults.standard.string(forKey: "workoutDay_\(dateKey)") {
+            dayId = savedDayId
+            if let dayConfig = configManager.getWorkoutDay(id: dayId) {
+                dayName = dayConfig.name
+            }
         }
     }
     
@@ -332,7 +341,7 @@ class DailyWorkoutSession: ObservableObject {
                 guard !Calendar.current.isDateInToday(date) else { return nil }
                 // Only include workouts matching the current selected day
                 if let workoutDay = workout["day"] as? String {
-                    guard workoutDay == day.rawValue || workoutDay.contains(day.rawValue) else { return nil }
+                    guard workoutDay == dayName || workoutDay.contains(dayName) else { return nil }
                 }
                 return (date, workout)
             }
@@ -340,7 +349,7 @@ class DailyWorkoutSession: ObservableObject {
         
         guard let mostRecent = sortedWorkouts.first,
               let exercisesData = mostRecent.data["exercises"] as? [String: [[String: Any]]] else {
-            print("📭 No previous \(day.displayName) workout found")
+            print("📭 No previous \(dayName) workout found")
             return
         }
         
@@ -366,8 +375,12 @@ class DailyWorkoutSession: ObservableObject {
             if let prevNotes = mostRecent.data["notes"] as? String {
                 notes = prevNotes
             }
-            if let prevDay = mostRecent.data["day"] as? String, let parsed = WorkoutDay(rawValue: prevDay) {
-                day = parsed
+            if let prevDay = mostRecent.data["day"] as? String {
+                // Try to find matching day by name
+                if let dayConfig = configManager.workoutDays.first(where: { $0.name == prevDay }) {
+                    dayId = dayConfig.id
+                    dayName = dayConfig.name
+                }
             }
             // Save as today's starting point
             saveTodaysWorkout()
@@ -401,12 +414,15 @@ class DailyWorkoutSession: ObservableObject {
         objectWillChange.send()
     }
     
-    func updateDay(_ newDay: WorkoutDay) {
+    func updateDay(_ newDayId: String) {
         // Save current day's work before switching
         saveCurrentDayToMemory()
         
         // Switch to new day
-        day = newDay
+        dayId = newDayId
+        if let dayConfig = configManager.getWorkoutDay(id: dayId) {
+            dayName = dayConfig.name
+        }
         
         // Load the new day's work from memory or storage
         loadDayFromMemory()
@@ -416,37 +432,37 @@ class DailyWorkoutSession: ObservableObject {
     
     private func saveCurrentDayToMemory() {
         // Store current state for this day in memory
-        dayWorkouts[day] = (exercises: exercises, notes: notes)
+        dayWorkouts[dayId] = (exercises: exercises, notes: notes)
         
         // Also persist to UserDefaults with day-specific key
-        let dayKey = "tempWorkout_\(dateKey)_\(day.rawValue)"
+        let dayKey = "tempWorkout_\(dateKey)_\(dayId)"
         let encoder = JSONEncoder()
         if let encoded = try? encoder.encode(exercises) {
             UserDefaults.standard.set(encoded, forKey: dayKey)
         }
-        UserDefaults.standard.set(notes, forKey: "tempNotes_\(dateKey)_\(day.rawValue)")
+        UserDefaults.standard.set(notes, forKey: "tempNotes_\(dateKey)_\(dayId)")
     }
     
     private func loadDayFromMemory() {
         // First check in-memory cache
-        if let cached = dayWorkouts[day] {
+        if let cached = dayWorkouts[dayId] {
             exercises = cached.exercises
             notes = cached.notes
-            print("📦 Loaded \(day.displayName) from memory cache")
+            print("📦 Loaded \(dayName) from memory cache")
             return
         }
         
         // Then check UserDefaults temp storage
-        let dayKey = "tempWorkout_\(dateKey)_\(day.rawValue)"
+        let dayKey = "tempWorkout_\(dateKey)_\(dayId)"
         if let data = UserDefaults.standard.data(forKey: dayKey),
            let decoded = try? JSONDecoder().decode([String: [SetData]].self, from: data) {
             exercises = decoded
-            if let savedNotes = UserDefaults.standard.string(forKey: "tempNotes_\(dateKey)_\(day.rawValue)") {
+            if let savedNotes = UserDefaults.standard.string(forKey: "tempNotes_\(dateKey)_\(dayId)") {
                 notes = savedNotes
             }
             // Cache it
-            dayWorkouts[day] = (exercises: exercises, notes: notes)
-            print("📦 Loaded \(day.displayName) from temp storage")
+            dayWorkouts[dayId] = (exercises: exercises, notes: notes)
+            print("📦 Loaded \(dayName) from temp storage")
             return
         }
         
@@ -472,38 +488,7 @@ struct TodayView: View {
     @State private var showingWorkoutSaved: Bool = false
 
     var exercises: [String] {
-        switch dailyWorkout.day {
-        case .leg:
-            return [
-                "Bulgarian Split Squat",
-                "Leg Press",
-                "Single-Leg Extension",
-                "Hamstring Curl",
-                "Standing Calf Raise",
-                "Seated Calf Raise",
-                "Box Jumps"
-            ]
-        case .push:
-            return [
-                "Bench Press",
-                "Incline Bench",
-                "Dips"
-            ]
-        case .pull:
-            return [
-                "Single-Arm Row",
-                "Single-Arm Dumbbell Row",
-                "Pull-Ups",
-                "Lat Pulldown",
-                "Dumbbell Curls"
-            ]
-        case .core:
-            return [
-                "Watkins Core Program",
-                "Cable Crunches",
-                "Hanging Knee Raises (Pike)"
-            ]
-        }
+        return WorkoutConfigManager.shared.getExercisesForDay(dayId: dailyWorkout.dayId)
     }
 
     var body: some View {
@@ -689,7 +674,7 @@ struct TodayView: View {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     VStack(spacing: 2) {
-                        Text(dailyWorkout.day.displayName)
+                        Text(dailyWorkout.dayName)
                             .font(.system(size: 28, weight: .heavy))
                             .foregroundStyle(.primary)
                             .minimumScaleFactor(0.8)
@@ -700,10 +685,10 @@ struct TodayView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Menu(dailyWorkout.day.displayName) {
-                        ForEach(WorkoutDay.allCases, id: \.self) { option in
-                            Button(option.displayName) {
-                                dailyWorkout.updateDay(option)
+                    Menu(dailyWorkout.dayName) {
+                        ForEach(WorkoutConfigManager.shared.workoutDays, id: \.id) { dayConfig in
+                            Button(dayConfig.name) {
+                                dailyWorkout.updateDay(dayConfig.id)
                             }
                         }
                     }

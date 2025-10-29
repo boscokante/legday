@@ -134,11 +134,24 @@ struct DataManagementView: View {
             }
         }
         
+        // Get workout configurations
+        let configManager = WorkoutConfigManager.shared
+        let workoutDaysData = configManager.workoutDays.map { day in
+            [
+                "id": day.id,
+                "name": day.name,
+                "exercises": day.exercises,
+                "isDefault": day.isDefault
+            ]
+        }
+        
         let exportData: [String: Any] = [
             "version": "1.0",
             "exportDate": Date().timeIntervalSince1970,
             "workouts": workouts,
-            "metrics": metricsData
+            "metrics": metricsData,
+            "workoutDays": workoutDaysData,
+            "allExercises": configManager.allExercises
         ]
         
         // Convert to JSON
@@ -247,6 +260,41 @@ struct DataManagementView: View {
                     if let encoded = try? JSONEncoder().encode(existingMetrics) {
                         UserDefaults.standard.set(encoded, forKey: "bodyMetrics")
                     }
+                }
+                
+                // Import workout configurations
+                if let workoutDaysData = importData["workoutDays"] as? [[String: Any]] {
+                    let configManager = WorkoutConfigManager.shared
+                    
+                    // Import workout days
+                    for dayDict in workoutDaysData {
+                        if let id = dayDict["id"] as? String,
+                           let name = dayDict["name"] as? String,
+                           let exercises = dayDict["exercises"] as? [String],
+                           let isDefault = dayDict["isDefault"] as? Bool {
+                            
+                            // Check if day already exists
+                            if configManager.getWorkoutDay(id: id) == nil {
+                                let dayConfig = WorkoutDayConfig(
+                                    id: id,
+                                    name: name,
+                                    exercises: exercises,
+                                    isDefault: isDefault
+                                )
+                                configManager.workoutDays.append(dayConfig)
+                            }
+                        }
+                    }
+                    
+                    // Import exercises
+                    if let allExercises = importData["allExercises"] as? [String] {
+                        for exercise in allExercises {
+                            configManager.addExercise(name: exercise)
+                        }
+                    }
+                    
+                    // Save configurations
+                    configManager.saveData()
                 }
                 
                 showingImportSuccess = true

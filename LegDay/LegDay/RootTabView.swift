@@ -13,6 +13,8 @@ struct RootTabView: View {
                 .tabItem { Label("Metrics", systemImage: "chart.line.uptrend.xyaxis") }
             DataManagementView()
                 .tabItem { Label("Backup", systemImage: "externaldrive") }
+            ExerciseManagementView()
+                .tabItem { Label("Settings", systemImage: "gearshape") }
             TemplatesView()
                 .tabItem { Label("Templates", systemImage: "list.bullet.rectangle") }
         }
