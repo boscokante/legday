@@ -683,14 +683,13 @@ struct TodayView: View {
                                     .foregroundStyle(completedCount > 0 ? .green : .secondary)
                                     .font(.caption)
                             }
-                            
-                            Button(action: {
+                        }
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
                                 removeExerciseFromCurrentDay(exercise)
-                            }) {
-                                Image(systemName: "minus.circle.fill")
-                                    .foregroundColor(.red)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
                             }
-                            .buttonStyle(.plain)
                         }
                     }
                     
