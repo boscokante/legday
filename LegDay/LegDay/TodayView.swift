@@ -289,7 +289,15 @@ class DailyWorkoutSession: ObservableObject {
         exercises[exercise]![index].weight = weight
         exercises[exercise]![index].reps = reps
         exercises[exercise]![index].warmup = warmup
+        let wasCompleted = exercises[exercise]![index].completed
         exercises[exercise]![index].completed = completed
+        
+        // Set completion date when marking as completed (or clear it if unchecking)
+        if completed && !wasCompleted {
+            exercises[exercise]![index].completionDate = Date()
+        } else if !completed {
+            exercises[exercise]![index].completionDate = nil
+        }
         
         saveTodaysWorkout()
         objectWillChange.send()
@@ -322,6 +330,7 @@ class DailyWorkoutSession: ObservableObject {
         var allExercises: [String: [[String: Any]]] = [:]
         var allNotes: [String] = []
         var daysWorked: Set<String> = []
+        var completionDates: [Date] = []  // Track all completion dates
         
         // Add current day if it has exercises
         if !exercises.isEmpty {
@@ -331,7 +340,11 @@ class DailyWorkoutSession: ObservableObject {
                 let completedSets = sets.filter { $0.completed }
                 if !completedSets.isEmpty {
                     allExercises[exerciseName] = completedSets.map { set in
-                        ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
+                        // Collect completion dates
+                        if let completionDate = set.completionDate {
+                            completionDates.append(completionDate)
+                        }
+                        return ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
                     }
                 }
             }
@@ -351,7 +364,11 @@ class DailyWorkoutSession: ObservableObject {
                     let completedSets = sets.filter { $0.completed }
                     if !completedSets.isEmpty {
                         allExercises[exerciseName] = completedSets.map { set in
-                            ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
+                            // Collect completion dates
+                            if let completionDate = set.completionDate {
+                                completionDates.append(completionDate)
+                            }
+                            return ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
                         }
                     }
                 }
@@ -371,17 +388,28 @@ class DailyWorkoutSession: ObservableObject {
         let combinedNotes = allNotes.joined(separator: "\n")
         let combinedDay = daysWorked.sorted().joined(separator: ", ")
         
+        // Use earliest completion date if available, otherwise use current date
+        let workoutDate: Date
+        if let earliestDate = completionDates.min() {
+            workoutDate = earliestDate
+            print("📅 Using earliest completion date: \(earliestDate)")
+        } else {
+            workoutDate = Date()
+            print("⚠️ No completion dates found, using current date")
+        }
+        
         let workoutData: [String: Any] = [
-            "date": Date().timeIntervalSince1970,
+            "date": workoutDate.timeIntervalSince1970,
             "exercises": allExercises,
             "notes": combinedNotes,
             "day": combinedDay
         ]
         
         var savedWorkouts = HistoryCodec.loadSavedWorkouts()
+        // Remove workouts from the same day as the workout date (not today)
         savedWorkouts.removeAll { workout in
             if let date = workout["date"] as? TimeInterval {
-                return Calendar.current.isDate(Date(timeIntervalSince1970: date), inSameDayAs: Date())
+                return Calendar.current.isDate(Date(timeIntervalSince1970: date), inSameDayAs: workoutDate)
             }
             return false
         }
@@ -395,7 +423,9 @@ class DailyWorkoutSession: ObservableObject {
         clearTempStorage()
         dayWorkouts.removeAll()
         
-        print("=== WORKOUT SAVED: \(combinedDay) ===")
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        print("=== WORKOUT SAVED: \(combinedDay) on \(dateFormatter.string(from: workoutDate)) ===")
         for (exercise, sets) in allExercises {
             if let setArray = sets as? [[String: Any]] {
                 print("\(exercise): \(setArray.count) sets")

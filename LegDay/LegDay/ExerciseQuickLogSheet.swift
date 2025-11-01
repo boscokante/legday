@@ -6,6 +6,7 @@ struct SetData: Identifiable, Equatable, Codable {
     var reps: Int
     var warmup: Bool
     var completed: Bool = false  // Only save sets marked as completed
+    var completionDate: Date?  // Date when set was marked as completed
 }
 
 struct ExerciseSessionSheet: View {
