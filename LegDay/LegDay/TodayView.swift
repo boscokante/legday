@@ -2,6 +2,7 @@ import SwiftUI
 import CoreData
 import Combine
 import AudioToolbox
+import UserNotifications
 
 // Rest Timer Class
 class RestTimer: ObservableObject {
@@ -14,6 +15,24 @@ class RestTimer: ObservableObject {
     let timerName: String
     let soundID: SystemSoundID
     let soundRepeatCount: Int
+    private let timerKey: String
+    
+    // Store start time for background persistence
+    private var startDate: Date? {
+        get {
+            guard let timeInterval = UserDefaults.standard.object(forKey: timerKey) as? TimeInterval else {
+                return nil
+            }
+            return Date(timeIntervalSince1970: timeInterval)
+        }
+        set {
+            if let date = newValue {
+                UserDefaults.standard.set(date.timeIntervalSince1970, forKey: timerKey)
+            } else {
+                UserDefaults.standard.removeObject(forKey: timerKey)
+            }
+        }
+    }
     
     init(seconds: Int, name: String, soundID: SystemSoundID = 1005, soundRepeatCount: Int = 1) {
         self.totalTime = seconds
@@ -21,6 +40,10 @@ class RestTimer: ObservableObject {
         self.timerName = name
         self.soundID = soundID
         self.soundRepeatCount = soundRepeatCount
+        self.timerKey = "timer_start_\(name)"
+        
+        // Restore timer state on init
+        restoreTimerState()
     }
     
     func start() {
@@ -31,13 +54,16 @@ class RestTimer: ObservableObject {
         isFinished = false
         remainingTime = totalTime
         
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+        // Store start time
+        startDate = Date()
+        
+        // Schedule local notification
+        scheduleNotification()
+        
+        // Start UI timer
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             DispatchQueue.main.async {
-                if self.remainingTime > 0 {
-                    self.remainingTime -= 1
-                } else {
-                    self.finish()
-                }
+                self?.updateRemainingTime()
             }
         }
     }
@@ -48,6 +74,12 @@ class RestTimer: ObservableObject {
         timer = nil
         isActive = false
         remainingTime = totalTime
+        
+        // Clear stored start time
+        startDate = nil
+        
+        // Cancel notification
+        cancelNotification()
     }
     
     private func finish() {
@@ -56,12 +88,91 @@ class RestTimer: ObservableObject {
         isActive = false
         isFinished = true
         
+        // Clear stored start time
+        startDate = nil
+        
+        // Cancel notification (already fired)
+        cancelNotification()
+        
         // Play sound multiple times if needed
         playSound(repeatCount: soundRepeatCount)
         
         // Haptic feedback
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.success)
+    }
+    
+    private func updateRemainingTime() {
+        guard let start = startDate else {
+            finish()
+            return
+        }
+        
+        let elapsed = Int(Date().timeIntervalSince(start))
+        let newRemaining = totalTime - elapsed
+        
+        if newRemaining <= 0 {
+            finish()
+        } else {
+            remainingTime = newRemaining
+        }
+    }
+    
+    private func restoreTimerState() {
+        guard let start = startDate else {
+            return
+        }
+        
+        let elapsed = Int(Date().timeIntervalSince(start))
+        let newRemaining = totalTime - elapsed
+        
+        if newRemaining <= 0 {
+            // Timer already finished while app was backgrounded
+            isActive = false
+            isFinished = true
+            remainingTime = 0
+            startDate = nil
+            cancelNotification()
+        } else {
+            // Timer still running
+            isActive = true
+            isFinished = false
+            remainingTime = newRemaining
+            
+            // Restart UI timer
+            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.updateRemainingTime()
+                }
+            }
+        }
+    }
+    
+    func checkTimerState() {
+        guard isActive else { return }
+        updateRemainingTime()
+    }
+    
+    private func scheduleNotification() {
+        let center = UNUserNotificationCenter.current()
+        
+        let content = UNMutableNotificationContent()
+        content.title = "Timer Complete"
+        content.body = "\(timerName) timer finished"
+        content.sound = .default
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(totalTime), repeats: false)
+        let request = UNNotificationRequest(identifier: timerKey, content: content, trigger: trigger)
+        
+        center.add(request) { error in
+            if let error = error {
+                print("❌ Failed to schedule notification: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func cancelNotification() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [timerKey])
     }
     
     private func playSound(repeatCount: Int) {
@@ -126,6 +237,12 @@ class TimerManager: ObservableObject {
                 self?.objectWillChange.send()
             }
         }.store(in: &cancellables)
+    }
+    
+    func checkAllTimers() {
+        timer2min.checkTimerState()
+        timer45sec.checkTimerState()
+        timer30sec.checkTimerState()
     }
 }
 
