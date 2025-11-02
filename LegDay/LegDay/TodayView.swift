@@ -479,64 +479,78 @@ class DailyWorkoutSession: ObservableObject {
             return
         }
         
-        // Filter by current day, sort by date (most recent first) and exclude today
+        // Get all exercises configured for the current day
+        let dayExercises = configManager.getExercisesForDay(dayId: dayId)
+        guard !dayExercises.isEmpty else {
+            print("📭 No exercises configured for \(dayName)")
+            return
+        }
+        
+        // Sort all workouts by date (most recent first) and exclude today
         let sortedWorkouts = savedWorkouts
             .compactMap { workout -> (date: Date, data: [String: Any])? in
                 guard let timestamp = workout["date"] as? TimeInterval else { return nil }
                 let date = Date(timeIntervalSince1970: timestamp)
                 // Skip if it's today
                 guard !Calendar.current.isDateInToday(date) else { return nil }
-                // Only include workouts matching the current selected day
-                if let workoutDay = workout["day"] as? String {
-                    guard workoutDay == dayName || workoutDay.contains(dayName) else { return nil }
-                }
                 return (date, workout)
             }
             .sorted { $0.date > $1.date }
         
-        guard let mostRecent = sortedWorkouts.first,
-              let exercisesData = mostRecent.data["exercises"] as? [String: [[String: Any]]] else {
-            print("📭 No previous \(dayName) workout found")
-            return
-        }
-        
-        // Convert the workout data to SetData objects
+        // For each exercise in the current day, find its most recent completion across all workouts
         var loadedExercises: [String: [SetData]] = [:]
-        for (exerciseName, setsArray) in exercisesData {
-            let sets = setsArray.compactMap { setDict -> SetData? in
-                guard let weight = setDict["weight"] as? Double,
-                      let reps = setDict["reps"] as? Int,
-                      let warmup = setDict["warmup"] as? Bool else {
-                    return nil
+        var loadedExercisesDates: [String: Date] = [:]  // Track when each exercise was loaded from
+        
+        for exerciseName in dayExercises {
+            // Search through all workouts (most recent first) to find this exercise
+            for (date, workout) in sortedWorkouts {
+                if let exercisesData = workout["exercises"] as? [String: [[String: Any]]],
+                   let setsArray = exercisesData[exerciseName],
+                   !setsArray.isEmpty {
+                    // Found this exercise - load its sets
+                    let sets = setsArray.compactMap { setDict -> SetData? in
+                        guard let weight = setDict["weight"] as? Double,
+                              let reps = setDict["reps"] as? Int,
+                              let warmup = setDict["warmup"] as? Bool else {
+                            return nil
+                        }
+                        // Load sets as UNCOMMITTED - user must check them off as they complete them
+                        return SetData(weight: weight, reps: reps, warmup: warmup, completed: false)
+                    }
+                    if !sets.isEmpty {
+                        loadedExercises[exerciseName] = sets
+                        loadedExercisesDates[exerciseName] = date
+                        print("📦 Loaded \(exerciseName) from \(date.formatted(date: .abbreviated, time: .omitted))")
+                        break  // Found most recent completion, move to next exercise
+                    }
                 }
-                // Load sets as UNCOMMITTED - user must check them off as they complete them
-                return SetData(weight: weight, reps: reps, warmup: warmup, completed: false)
-            }
-            if !sets.isEmpty {
-                loadedExercises[exerciseName] = sets
             }
         }
         
         if !loadedExercises.isEmpty {
             exercises = loadedExercises
-            if let prevNotes = mostRecent.data["notes"] as? String {
-                notes = prevNotes
-            }
-            if let prevDay = mostRecent.data["day"] as? String {
-                // Try to find matching day by name
-                if let dayConfig = configManager.workoutDays.first(where: { $0.name == prevDay }) {
-                    dayId = dayConfig.id
-                    dayName = dayConfig.name
+            
+            // Find the most recent date from which we loaded any exercise (for notes/context)
+            if let mostRecentDate = loadedExercisesDates.values.max() {
+                // Try to load notes from the most recent workout that had any of these exercises
+                for (date, workout) in sortedWorkouts {
+                    if date == mostRecentDate,
+                       let prevNotes = workout["notes"] as? String,
+                       !prevNotes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        notes = prevNotes
+                        break
+                    }
                 }
             }
+            
             // Save as today's starting point
             saveTodaysWorkout()
             
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateStyle = .short
-            print("✅ Prefilled workout from \(dateFormatter.string(from: mostRecent.date)) - \(getTotalSets()) sets loaded")
+            let loadedCount = loadedExercises.count
+            let totalSets = getTotalSets()
+            print("✅ Loaded \(loadedCount)/\(dayExercises.count) exercises with \(totalSets) total sets")
         } else {
-            print("📭 Previous workout was empty")
+            print("📭 No previous completions found for exercises in \(dayName)")
         }
     }
     
