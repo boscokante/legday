@@ -7,6 +7,7 @@ struct HistoryView: View {
     @State private var editingNotes: String = ""
     @State private var editingDateIndex: Int? = nil
     @State private var editingDate: Date = Date()
+    @State private var showDatePicker: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -24,16 +25,9 @@ struct HistoryView: View {
                         VStack(alignment: .leading, spacing: 6) {
                             // Date and Day Type
                             HStack {
-                                if editingDateIndex == index {
-                                    // Use editingDate directly as source of truth
-                                    DatePicker("Date", selection: $editingDate, displayedComponents: .date)
-                                        .datePickerStyle(.compact)
-                                        .labelsHidden()
-                                } else {
-                                    if let ts = w["date"] as? TimeInterval {
-                                        Text(Date(timeIntervalSince1970: ts).formatted(date: .abbreviated, time: .omitted))
-                                            .font(.headline)
-                                    }
+                                if let ts = w["date"] as? TimeInterval {
+                                    Text(Date(timeIntervalSince1970: ts).formatted(date: .abbreviated, time: .omitted))
+                                        .font(.headline)
                                 }
                                 if let day = w["day"] as? String {
                                     Text("• \(day)")
@@ -49,6 +43,7 @@ struct HistoryView: View {
                                             editingDate = Date()
                                         }
                                         editingDateIndex = index
+                                        showDatePicker = true
                                     }) {
                                         Image(systemName: "calendar")
                                             .font(.caption)
@@ -60,20 +55,6 @@ struct HistoryView: View {
                                         Image(systemName: "pencil")
                                             .font(.caption)
                                     }
-                                }
-                            }
-                            
-                            if editingDateIndex == index {
-                                HStack {
-                                    Button("Cancel") {
-                                        editingDateIndex = nil
-                                    }
-                                    .foregroundStyle(.secondary)
-                                    Spacer()
-                                    Button("Save Date") {
-                                        saveDate(for: index)
-                                    }
-                                    .foregroundStyle(.blue)
                                 }
                             }
                             
@@ -120,6 +101,21 @@ struct HistoryView: View {
             }
             .navigationTitle("History")
             .onAppear(perform: load)
+            .sheet(isPresented: $showDatePicker) {
+                DateEditSheet(
+                    date: $editingDate,
+                    onSave: {
+                        if let index = editingDateIndex {
+                            saveDate(for: index)
+                        }
+                        showDatePicker = false
+                    },
+                    onCancel: {
+                        showDatePicker = false
+                        editingDateIndex = nil
+                    }
+                )
+            }
         }
     }
     
@@ -131,11 +127,16 @@ struct HistoryView: View {
         
         // Use editingDate directly - normalize to start of day
         let normalized = Calendar.current.startOfDay(for: editingDate).timeIntervalSince1970
-        print("📅 Saving date: \(editingDate) -> normalized: \(normalized)")
         
-        // Get the workout we're modifying by its current date (for finding it after re-sort)
+        // Get the workout we're modifying
         let oldDate = workouts[index]["date"] as? TimeInterval
         let dayName = workouts[index]["day"] as? String
+        
+        print("📅 Saving date change:")
+        print("   Index: \(index)")
+        print("   Day: \(dayName ?? "unknown")")
+        print("   Old date: \(oldDate ?? 0) -> \(oldDate.map { Date(timeIntervalSince1970: $0) } ?? Date())")
+        print("   New date: \(normalized) -> \(editingDate)")
         
         // Create a mutable copy and update the date
         var updatedWorkouts = workouts
@@ -148,9 +149,9 @@ struct HistoryView: View {
             let jsonData = try JSONSerialization.data(withJSONObject: updatedWorkouts)
             UserDefaults.standard.set(jsonData, forKey: "savedWorkouts")
             UserDefaults.standard.synchronize()
-            print("✅ Saved date to UserDefaults - old: \(oldDate ?? 0), new: \(normalized), day: \(dayName ?? "unknown")")
+            print("✅ Saved to UserDefaults")
             
-            // Clear editing state first
+            // Clear editing state
             editingDateIndex = nil
             
             // Re-sort the workouts after the date change (since sort order may have changed)
@@ -160,8 +161,7 @@ struct HistoryView: View {
                 return lhsDate > rhsDate
             }
             
-            // DON'T change refreshId - it causes onAppear to reload from UserDefaults
-            // The @State update is sufficient to trigger a re-render
+            print("✅ Updated local state with \(workouts.count) workouts")
         } catch {
             print("❌ Error saving date: \(error)")
         }
@@ -189,6 +189,40 @@ struct HistoryView: View {
         } catch {
             print("Error saving notes: \(error)")
         }
+    }
+}
+
+// MARK: - Date Edit Sheet
+struct DateEditSheet: View {
+    @Binding var date: Date
+    let onSave: () -> Void
+    let onCancel: () -> Void
+    
+    var body: some View {
+        NavigationStack {
+            VStack {
+                DatePicker("Select Date", selection: $date, displayedComponents: .date)
+                    .datePickerStyle(.graphical)
+                    .padding()
+                
+                Spacer()
+            }
+            .navigationTitle("Change Date")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        onCancel()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        onSave()
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium])
     }
 }
 
