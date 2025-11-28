@@ -112,6 +112,7 @@ class RestTimer: ObservableObject {
         let newRemaining = totalTime - elapsed
         
         if newRemaining <= 0 {
+            remainingTime = 0
             finish()
         } else {
             remainingTime = newRemaining
@@ -253,6 +254,8 @@ class DailyWorkoutSession: ObservableObject {
     @Published var exercises: [String: [SetData]] = [:]
     @Published var dayId: String = ""
     @Published var dayName: String = ""
+    @Published var secondaryDayId: String? = nil
+    @Published var secondaryDayName: String? = nil
     @Published var notes: String = ""
     private let dateKey: String
     
@@ -260,6 +263,9 @@ class DailyWorkoutSession: ObservableObject {
     private var dayWorkouts: [String: (exercises: [String: [SetData]], notes: String)] = [:]
     
     @ObservedObject private var configManager = WorkoutConfigManager.shared
+    
+    // Singleton for auto-save access
+    static let shared = DailyWorkoutSession()
     
     init() {
         let formatter = DateFormatter()
@@ -273,6 +279,109 @@ class DailyWorkoutSession: ObservableObject {
         }
         
         loadTodaysWorkout()
+        loadDualFocusState()
+    }
+    
+    // MARK: - Dual Focus Support
+    
+    var combinedDayName: String {
+        if let secondary = secondaryDayName {
+            return "\(dayName) + \(secondary)"
+        }
+        return dayName
+    }
+    
+    var allExercises: [String] {
+        return configManager.getExercisesForDualFocus(primaryDayId: dayId, secondaryDayId: secondaryDayId)
+    }
+    
+    func updateDualFocus(primaryId: String, secondaryId: String?) {
+        // Save current day's work before switching
+        saveCurrentDayToMemory()
+        
+        // Switch to new primary day
+        dayId = primaryId
+        if let dayConfig = configManager.getWorkoutDay(id: dayId) {
+            dayName = dayConfig.name
+        }
+        
+        // Set secondary day
+        secondaryDayId = secondaryId
+        if let secId = secondaryId, let secConfig = configManager.getWorkoutDay(id: secId) {
+            secondaryDayName = secConfig.name
+        } else {
+            secondaryDayName = nil
+        }
+        
+        // Load exercises from both focuses
+        loadDayFromMemory()
+        if let secId = secondaryDayId {
+            loadSecondaryDayExercises(secId)
+        }
+        
+        // Save the dual focus state
+        saveDualFocusState()
+        
+        objectWillChange.send()
+    }
+    
+    private func loadSecondaryDayExercises(_ secId: String) {
+        // Load previous workout data for secondary day exercises
+        let savedWorkouts = HistoryCodec.loadSavedWorkouts()
+        let secondaryExercises = configManager.getExercisesForDay(dayId: secId)
+        
+        let sortedWorkouts = savedWorkouts
+            .compactMap { workout -> (date: Date, data: [String: Any])? in
+                guard let timestamp = workout["date"] as? TimeInterval else { return nil }
+                let date = Date(timeIntervalSince1970: timestamp)
+                guard !Calendar.current.isDateInToday(date) else { return nil }
+                return (date, workout)
+            }
+            .sorted { $0.date > $1.date }
+        
+        for exerciseName in secondaryExercises {
+            // Skip if already loaded
+            guard exercises[exerciseName] == nil else { continue }
+            
+            for (date, workout) in sortedWorkouts {
+                if let exercisesData = workout["exercises"] as? [String: [[String: Any]]],
+                   let setsArray = exercisesData[exerciseName],
+                   !setsArray.isEmpty {
+                    let sets = setsArray.compactMap { setDict -> SetData? in
+                        guard let weight = setDict["weight"] as? Double,
+                              let reps = setDict["reps"] as? Int,
+                              let warmup = setDict["warmup"] as? Bool else { return nil }
+                        let minutes = setDict["minutes"] as? Int
+                        let seconds = setDict["seconds"] as? Int
+                        let shotsMade = setDict["shotsMade"] as? Int
+                        return SetData(weight: weight, reps: reps, warmup: warmup, completed: false, minutes: minutes, seconds: seconds, shotsMade: shotsMade)
+                    }
+                    if !sets.isEmpty {
+                        exercises[exerciseName] = sets
+                        print("📦 Loaded secondary exercise \(exerciseName) from \(date.formatted(date: .abbreviated, time: .omitted))")
+                        break
+                    }
+                }
+            }
+        }
+    }
+    
+    private func saveDualFocusState() {
+        UserDefaults.standard.set(dayId, forKey: "dualFocus_primary_\(dateKey)")
+        if let secId = secondaryDayId {
+            UserDefaults.standard.set(secId, forKey: "dualFocus_secondary_\(dateKey)")
+        } else {
+            UserDefaults.standard.removeObject(forKey: "dualFocus_secondary_\(dateKey)")
+        }
+    }
+    
+    private func loadDualFocusState() {
+        if let savedSecondary = UserDefaults.standard.string(forKey: "dualFocus_secondary_\(dateKey)") {
+            secondaryDayId = savedSecondary
+            if let secConfig = configManager.getWorkoutDay(id: savedSecondary) {
+                secondaryDayName = secConfig.name
+            }
+        }
     }
     
     func addSet(to exercise: String, set: SetData) {
@@ -283,12 +392,29 @@ class DailyWorkoutSession: ObservableObject {
         saveTodaysWorkout()
     }
     
-    func updateSet(exercise: String, index: Int, weight: Double, reps: Int, warmup: Bool, completed: Bool) {
+    func updateSet(exercise: String, index: Int, weight: Double, reps: Int, warmup: Bool, completed: Bool, minutes: Int = 0, seconds: Int = 0, shotsMade: Int = 0) {
         guard exercises[exercise] != nil && index < exercises[exercise]!.count else { return }
         
         exercises[exercise]![index].weight = weight
         exercises[exercise]![index].reps = reps
         exercises[exercise]![index].warmup = warmup
+        
+        // Preserve time values if either is set (including 0)
+        let dataType = ExerciseDataType.type(for: exercise)
+        if dataType == .time {
+            exercises[exercise]![index].minutes = minutes
+            exercises[exercise]![index].seconds = seconds
+        } else {
+            exercises[exercise]![index].minutes = nil
+            exercises[exercise]![index].seconds = nil
+        }
+        
+        // Preserve shots if it's a shots exercise
+        if dataType == .shots {
+            exercises[exercise]![index].shotsMade = shotsMade
+        } else {
+            exercises[exercise]![index].shotsMade = nil
+        }
         let wasCompleted = exercises[exercise]![index].completed
         exercises[exercise]![index].completed = completed
         
@@ -326,71 +452,33 @@ class DailyWorkoutSession: ObservableObject {
         // Save current day to memory first
         saveCurrentDayToMemory()
         
-        // Collect all workouts from all days worked on today
-        var allExercises: [String: [[String: Any]]] = [:]
-        var allNotes: [String] = []
-        var daysWorked: Set<String> = []
-        var completionDates: [Date] = []  // Track all completion dates
+        // Collect all completion dates to determine workout date
+        var allCompletionDates: [Date] = []
         
-        // Add current day if it has exercises
+        // First pass: collect all completion dates from all days
         if !exercises.isEmpty {
-            daysWorked.insert(dayName)
-            for (exerciseName, sets) in exercises {
-                // Only save completed sets
-                let completedSets = sets.filter { $0.completed }
-                if !completedSets.isEmpty {
-                    allExercises[exerciseName] = completedSets.map { set in
-                        // Collect completion dates
-                        if let completionDate = set.completionDate {
-                            completionDates.append(completionDate)
-                        }
-                        return ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
-                    }
-                }
-            }
-            if !notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                allNotes.append("\(dayName): \(notes)")
-            }
-        }
-        
-        // Add other days from memory cache
-        for (workoutDayId, data) in dayWorkouts where workoutDayId != dayId {
-            if !data.exercises.isEmpty {
-                if let dayConfig = configManager.getWorkoutDay(id: workoutDayId) {
-                    daysWorked.insert(dayConfig.name)
-                }
-                for (exerciseName, sets) in data.exercises {
-                    // Only save completed sets
-                    let completedSets = sets.filter { $0.completed }
-                    if !completedSets.isEmpty {
-                        allExercises[exerciseName] = completedSets.map { set in
-                            // Collect completion dates
-                            if let completionDate = set.completionDate {
-                                completionDates.append(completionDate)
-                            }
-                            return ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
-                        }
-                    }
-                }
-                if !data.notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    if let dayConfig = configManager.getWorkoutDay(id: workoutDayId) {
-                        allNotes.append("\(dayConfig.name): \(data.notes)")
+            for (_, sets) in exercises {
+                for set in sets where set.completed {
+                    if let completionDate = set.completionDate {
+                        allCompletionDates.append(completionDate)
                     }
                 }
             }
         }
         
-        guard !allExercises.isEmpty else {
-            print("⚠️ No completed exercises to save")
-            return
+        for (_, data) in dayWorkouts {
+            for (_, sets) in data.exercises {
+                for set in sets where set.completed {
+                    if let completionDate = set.completionDate {
+                        allCompletionDates.append(completionDate)
+                    }
+                }
+            }
         }
-        
-        let combinedNotes = allNotes.joined(separator: "\n")
-        let combinedDay = daysWorked.sorted().joined(separator: ", ")
         
         // Use earliest completion date if available, otherwise use current date
         let workoutDate: Date
-        if let earliestDate = completionDates.min() {
+        if let earliestDate = allCompletionDates.min() {
             workoutDate = earliestDate
             print("📅 Using earliest completion date: \(earliestDate)")
         } else {
@@ -398,22 +486,102 @@ class DailyWorkoutSession: ObservableObject {
             print("⚠️ No completion dates found, using current date")
         }
         
-        let workoutData: [String: Any] = [
-            "date": workoutDate.timeIntervalSince1970,
-            "exercises": allExercises,
-            "notes": combinedNotes,
-            "day": combinedDay
-        ]
+        // Now create separate entries for each workout day
+        var workoutsToSave: [[String: Any]] = []
+        var daysWorked: Set<String> = []
+        
+        // Process current day
+        if !exercises.isEmpty {
+            var dayExercises: [String: [[String: Any]]] = [:]
+            for (exerciseName, sets) in exercises {
+                let completedSets = sets.filter { $0.completed }
+                if !completedSets.isEmpty {
+                    dayExercises[exerciseName] = completedSets.map { set in
+                        var setDict: [String: Any] = ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
+                        if let minutes = set.minutes {
+                            setDict["minutes"] = minutes
+                        }
+                        if let seconds = set.seconds {
+                            setDict["seconds"] = seconds
+                        }
+                        if let shotsMade = set.shotsMade {
+                            setDict["shotsMade"] = shotsMade
+                        }
+                        return setDict
+                    }
+                }
+            }
+            
+            if !dayExercises.isEmpty {
+                daysWorked.insert(dayName)
+                let workoutData: [String: Any] = [
+                    "date": workoutDate.timeIntervalSince1970,
+                    "exercises": dayExercises,
+                    "notes": notes.trimmingCharacters(in: .whitespacesAndNewlines),
+                    "day": dayName
+                ]
+                workoutsToSave.append(workoutData)
+            }
+        }
+        
+        // Process other days from memory cache
+        for (workoutDayId, data) in dayWorkouts where workoutDayId != dayId {
+            if !data.exercises.isEmpty {
+                var dayExercises: [String: [[String: Any]]] = [:]
+                for (exerciseName, sets) in data.exercises {
+                    let completedSets = sets.filter { $0.completed }
+                    if !completedSets.isEmpty {
+                        dayExercises[exerciseName] = completedSets.map { set in
+                            var setDict: [String: Any] = ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
+                            if let minutes = set.minutes {
+                                setDict["minutes"] = minutes
+                            }
+                            if let seconds = set.seconds {
+                                setDict["seconds"] = seconds
+                            }
+                            if let shotsMade = set.shotsMade {
+                                setDict["shotsMade"] = shotsMade
+                            }
+                            return setDict
+                        }
+                    }
+                }
+                
+                if !dayExercises.isEmpty {
+                    if let dayConfig = configManager.getWorkoutDay(id: workoutDayId) {
+                        daysWorked.insert(dayConfig.name)
+                        let workoutData: [String: Any] = [
+                            "date": workoutDate.timeIntervalSince1970,
+                            "exercises": dayExercises,
+                            "notes": data.notes.trimmingCharacters(in: .whitespacesAndNewlines),
+                            "day": dayConfig.name
+                        ]
+                        workoutsToSave.append(workoutData)
+                    }
+                }
+            }
+        }
+        
+        guard !workoutsToSave.isEmpty else {
+            print("⚠️ No completed exercises to save")
+            return
+        }
         
         var savedWorkouts = HistoryCodec.loadSavedWorkouts()
-        // Remove workouts from the same day as the workout date (not today)
+        
+        // Remove existing workouts from the same date that match the days we're saving
+        // This prevents duplicates when re-saving
         savedWorkouts.removeAll { workout in
-            if let date = workout["date"] as? TimeInterval {
-                return Calendar.current.isDate(Date(timeIntervalSince1970: date), inSameDayAs: workoutDate)
+            if let date = workout["date"] as? TimeInterval,
+               Calendar.current.isDate(Date(timeIntervalSince1970: date), inSameDayAs: workoutDate),
+               let existingDay = workout["day"] as? String {
+                return daysWorked.contains(existingDay)
             }
             return false
         }
-        savedWorkouts.append(workoutData)
+        
+        // Append all new workout entries
+        savedWorkouts.append(contentsOf: workoutsToSave)
         
         if let jsonData = try? JSONSerialization.data(withJSONObject: savedWorkouts) {
             UserDefaults.standard.set(jsonData, forKey: "savedWorkouts")
@@ -423,12 +591,22 @@ class DailyWorkoutSession: ObservableObject {
         clearTempStorage()
         dayWorkouts.removeAll()
         
+        // Clear notes after saving
+        notes = ""
+        saveTodaysWorkout()
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
-        print("=== WORKOUT SAVED: \(combinedDay) on \(dateFormatter.string(from: workoutDate)) ===")
-        for (exercise, sets) in allExercises {
-            if let setArray = sets as? [[String: Any]] {
-                print("\(exercise): \(setArray.count) sets")
+        let daysList = daysWorked.sorted().joined(separator: ", ")
+        print("=== WORKOUT SAVED: \(daysList) on \(dateFormatter.string(from: workoutDate)) ===")
+        for workout in workoutsToSave {
+            if let day = workout["day"] as? String, let exercises = workout["exercises"] as? [String: [[String: Any]]] {
+                print("  - \(day): \(exercises.count) exercises")
+                for (exercise, sets) in exercises {
+                    if let setArray = sets as? [[String: Any]] {
+                        print("    \(exercise): \(setArray.count) sets")
+                    }
+                }
             }
         }
         print("=============================")
@@ -443,32 +621,62 @@ class DailyWorkoutSession: ObservableObject {
     }
     
     private func saveTodaysWorkout() {
+        // Save to day-specific temp storage (for switching days)
+        let dayKey = "tempWorkout_\(dateKey)_\(dayId)"
         let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(exercises) {
+            UserDefaults.standard.set(encoded, forKey: dayKey)
+        }
+        UserDefaults.standard.set(notes, forKey: "tempNotes_\(dateKey)_\(dayId)")
+        
+        // Also save to shared storage for backward compatibility
         if let encoded = try? encoder.encode(exercises) {
             UserDefaults.standard.set(encoded, forKey: "workout_\(dateKey)")
         }
-        UserDefaults.standard.set(notes, forKey: "workoutNotes_\(dateKey)")
         UserDefaults.standard.set(dayId, forKey: "workoutDay_\(dateKey)")
+        
+        // Update memory cache
+        dayWorkouts[dayId] = (exercises: exercises, notes: notes)
     }
     
     private func loadTodaysWorkout() {
-        // First try to load today's workout
-        if let data = UserDefaults.standard.data(forKey: "workout_\(dateKey)"),
-           let decoded = try? JSONDecoder().decode([String: [SetData]].self, from: data) {
-            exercises = decoded
-            print("📅 Loaded existing workout for \(dateKey)")
-        } else {
-            // If no workout for today, prefill with previous workout
-            loadPreviousWorkout()
-        }
-        if let savedNotes = UserDefaults.standard.string(forKey: "workoutNotes_\(dateKey)") {
-            notes = savedNotes
-        }
+        // Load dayId first to know which day we're loading
         if let savedDayId = UserDefaults.standard.string(forKey: "workoutDay_\(dateKey)") {
             dayId = savedDayId
             if let dayConfig = configManager.getWorkoutDay(id: dayId) {
                 dayName = dayConfig.name
             }
+        }
+        
+        // First try to load today's workout for this day from temp storage
+        let dayKey = "tempWorkout_\(dateKey)_\(dayId)"
+        if let data = UserDefaults.standard.data(forKey: dayKey),
+           let decoded = try? JSONDecoder().decode([String: [SetData]].self, from: data) {
+            exercises = decoded
+            // Load notes from temp storage if they exist (user typed them today for this day)
+            if let savedNotes = UserDefaults.standard.string(forKey: "tempNotes_\(dateKey)_\(dayId)") {
+                notes = savedNotes
+            } else {
+                notes = ""
+            }
+            // Cache it
+            dayWorkouts[dayId] = (exercises: exercises, notes: notes)
+            print("📅 Loaded existing workout for \(dayName) on \(dateKey)")
+            return
+        }
+        
+        // Fallback: try to load from old shared storage (for backward compatibility)
+        if let data = UserDefaults.standard.data(forKey: "workout_\(dateKey)"),
+           let decoded = try? JSONDecoder().decode([String: [SetData]].self, from: data) {
+            exercises = decoded
+            print("📅 Loaded existing workout for \(dateKey)")
+            // Notes start empty - old storage didn't have day-specific notes
+            notes = ""
+        } else {
+            // If no workout for today, prefill with previous workout
+            loadPreviousWorkout()
+            // Notes start empty for new day
+            notes = ""
         }
     }
     
@@ -515,7 +723,10 @@ class DailyWorkoutSession: ObservableObject {
                             return nil
                         }
                         // Load sets as UNCOMMITTED - user must check them off as they complete them
-                        return SetData(weight: weight, reps: reps, warmup: warmup, completed: false)
+                        let minutes = setDict["minutes"] as? Int
+                        let seconds = setDict["seconds"] as? Int
+                        let shotsMade = setDict["shotsMade"] as? Int
+                        return SetData(weight: weight, reps: reps, warmup: warmup, completed: false, minutes: minutes, seconds: seconds, shotsMade: shotsMade)
                     }
                     if !sets.isEmpty {
                         loadedExercises[exerciseName] = sets
@@ -529,19 +740,7 @@ class DailyWorkoutSession: ObservableObject {
         
         if !loadedExercises.isEmpty {
             exercises = loadedExercises
-            
-            // Find the most recent date from which we loaded any exercise (for notes/context)
-            if let mostRecentDate = loadedExercisesDates.values.max() {
-                // Try to load notes from the most recent workout that had any of these exercises
-                for (date, workout) in sortedWorkouts {
-                    if date == mostRecentDate,
-                       let prevNotes = workout["notes"] as? String,
-                       !prevNotes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        notes = prevNotes
-                        break
-                    }
-                }
-            }
+            // Notes start empty - don't load from previous workouts
             
             // Save as today's starting point
             saveTodaysWorkout()
@@ -557,9 +756,16 @@ class DailyWorkoutSession: ObservableObject {
     func clearTodaysWorkout() {
         exercises.removeAll()
         notes = ""
+        // Clear day-specific temp storage
+        let dayKey = "tempWorkout_\(dateKey)_\(dayId)"
+        UserDefaults.standard.removeObject(forKey: dayKey)
+        UserDefaults.standard.removeObject(forKey: "tempNotes_\(dateKey)_\(dayId)")
+        // Clear shared storage
         UserDefaults.standard.removeObject(forKey: "workout_\(dateKey)")
         UserDefaults.standard.removeObject(forKey: "workoutNotes_\(dateKey)")
         UserDefaults.standard.removeObject(forKey: "workoutDay_\(dateKey)")
+        // Clear memory cache
+        dayWorkouts.removeValue(forKey: dayId)
     }
     
     func loadPreviousWorkoutManually() {
@@ -608,7 +814,7 @@ class DailyWorkoutSession: ObservableObject {
         // First check in-memory cache
         if let cached = dayWorkouts[dayId] {
             exercises = cached.exercises
-            notes = cached.notes
+            notes = cached.notes  // Restore notes from cache (persist during same day)
             print("📦 Loaded \(dayName) from memory cache")
             return
         }
@@ -618,8 +824,11 @@ class DailyWorkoutSession: ObservableObject {
         if let data = UserDefaults.standard.data(forKey: dayKey),
            let decoded = try? JSONDecoder().decode([String: [SetData]].self, from: data) {
             exercises = decoded
+            // Load notes from temp storage if they exist (persist during same day)
             if let savedNotes = UserDefaults.standard.string(forKey: "tempNotes_\(dateKey)_\(dayId)") {
                 notes = savedNotes
+            } else {
+                notes = ""
             }
             // Cache it
             dayWorkouts[dayId] = (exercises: exercises, notes: notes)
@@ -629,7 +838,7 @@ class DailyWorkoutSession: ObservableObject {
         
         // Finally, try to load from previous workout for this day
         exercises.removeAll()
-        notes = ""
+        notes = ""  // Start empty for first time opening this day
         loadPreviousWorkout()
     }
 }
@@ -642,34 +851,46 @@ private struct ExerciseSelection: Identifiable, Equatable {
 
 struct TodayView: View {
     @Environment(\.managedObjectContext) private var ctx
-    @StateObject private var dailyWorkout = DailyWorkoutSession()
+    @EnvironmentObject var voiceAgent: VoiceAgentStore
+    @StateObject private var dailyWorkout = DailyWorkoutSession.shared
     @ObservedObject private var timerManager = TimerManager.shared
     @ObservedObject private var configManager = WorkoutConfigManager.shared
     @State private var selectedExercise: ExerciseSelection?
     @State private var showingSavedWorkouts: Bool = false
     @State private var showingWorkoutSaved: Bool = false
     @State private var showingAddExercise = false
+    @State private var addingToSecondaryLane = false  // Track which lane we're adding to
     @State private var newExerciseName = ""
     @State private var confirmRestoreDefaults = false
+    @State private var isEditingPrimaryOrder = false
+    @State private var isEditingSecondaryOrder = false
 
-    var exercises: [String] {
+    var primaryExercises: [String] {
         return configManager.getExercisesForDay(dayId: dailyWorkout.dayId)
     }
     
-    private func addExerciseToCurrentDay(_ exerciseName: String) {
+    var secondaryExercises: [String] {
+        guard let secId = dailyWorkout.secondaryDayId else { return [] }
+        return configManager.getExercisesForDay(dayId: secId)
+    }
+    
+    private func addExerciseToLane(_ exerciseName: String, isSecondary: Bool) {
         let configManager = WorkoutConfigManager.shared
         
         // Add to master exercise list if not already there
         configManager.addExercise(name: exerciseName)
         
-        // Add to current day's exercise list
-        if let currentDay = configManager.getWorkoutDay(id: dailyWorkout.dayId) {
-            var updatedExercises = currentDay.exercises
+        // Determine target day
+        let targetDayId = isSecondary ? (dailyWorkout.secondaryDayId ?? dailyWorkout.dayId) : dailyWorkout.dayId
+        
+        // Add to target day's exercise list
+        if let targetDay = configManager.getWorkoutDay(id: targetDayId) {
+            var updatedExercises = targetDay.exercises
             if !updatedExercises.contains(exerciseName) {
                 updatedExercises.append(exerciseName)
                 configManager.updateWorkoutDay(
-                    id: dailyWorkout.dayId,
-                    name: currentDay.name,
+                    id: targetDayId,
+                    name: targetDay.name,
                     exercises: updatedExercises
                 )
             }
@@ -679,22 +900,53 @@ struct TodayView: View {
         newExerciseName = ""
     }
     
-    private func removeExerciseFromCurrentDay(_ exerciseName: String) {
+    private func removeExerciseFromLane(_ exerciseName: String, isSecondary: Bool) {
         let configManager = WorkoutConfigManager.shared
         
-        // Remove from current day's exercise list
-        if let currentDay = configManager.getWorkoutDay(id: dailyWorkout.dayId) {
-            var updatedExercises = currentDay.exercises
+        let targetDayId = isSecondary ? (dailyWorkout.secondaryDayId ?? dailyWorkout.dayId) : dailyWorkout.dayId
+        
+        // Remove from the appropriate day's exercise list
+        if let targetDay = configManager.getWorkoutDay(id: targetDayId) {
+            var updatedExercises = targetDay.exercises
             updatedExercises.removeAll { $0 == exerciseName }
             configManager.updateWorkoutDay(
-                id: dailyWorkout.dayId,
-                name: currentDay.name,
+                id: targetDayId,
+                name: targetDay.name,
                 exercises: updatedExercises
             )
         }
         
         // Also remove any sets for this exercise from the current workout
         dailyWorkout.exercises.removeValue(forKey: exerciseName)
+    }
+    
+    private func movePrimaryExercise(from source: IndexSet, to destination: Int) {
+        let configManager = WorkoutConfigManager.shared
+        var exercises = primaryExercises
+        exercises.move(fromOffsets: source, toOffset: destination)
+        
+        if let currentDay = configManager.getWorkoutDay(id: dailyWorkout.dayId) {
+            configManager.updateWorkoutDay(
+                id: dailyWorkout.dayId,
+                name: currentDay.name,
+                exercises: exercises
+            )
+        }
+    }
+    
+    private func moveSecondaryExercise(from source: IndexSet, to destination: Int) {
+        guard let secId = dailyWorkout.secondaryDayId else { return }
+        let configManager = WorkoutConfigManager.shared
+        var exercises = secondaryExercises
+        exercises.move(fromOffsets: source, toOffset: destination)
+        
+        if let secondaryDay = configManager.getWorkoutDay(id: secId) {
+            configManager.updateWorkoutDay(
+                id: secId,
+                name: secondaryDay.name,
+                exercises: exercises
+            )
+        }
     }
 
     var body: some View {
@@ -819,21 +1071,48 @@ struct TodayView: View {
                     }
                 }
                 
+                // MARK: - Primary Lane
                 Section(header: HStack {
-                    Text("Today's Workout")
+                    Menu {
+                        ForEach(configManager.workoutDays, id: \.id) { dayConfig in
+                            Button(dayConfig.name) {
+                                dailyWorkout.updateDay(dayConfig.id)
+                            }
+                        }
+                    } label: {
+                        HStack(spacing: 4) {
+                            Text(dailyWorkout.dayName)
+                                .font(.headline)
+                                .foregroundStyle(.primary)
+                            Image(systemName: "chevron.down")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    
                     Spacer()
-                    let completed = dailyWorkout.getCompletedSets()
-                    let total = dailyWorkout.getTotalSets()
-                    Text("\(completed)/\(total) completed")
-                        .foregroundStyle(completed > 0 ? .green : .secondary)
-                        .font(.caption)
+                    
+                    Button(isEditingPrimaryOrder ? "Done" : "Reorder") {
+                        withAnimation { isEditingPrimaryOrder.toggle() }
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.blue)
                 }) {
-                    ForEach(exercises, id: \.self) { exercise in
+                    ForEach(primaryExercises, id: \.self) { exercise in
                         HStack {
+                            if isEditingPrimaryOrder {
+                                Image(systemName: "line.3.horizontal")
+                                    .foregroundStyle(.secondary)
+                                    .padding(.trailing, 4)
+                            }
+                            
                             Button(exercise) {
-                                selectedExercise = ExerciseSelection(name: exercise)
+                                if !isEditingPrimaryOrder {
+                                    selectedExercise = ExerciseSelection(name: exercise)
+                                }
                             }
                             .foregroundStyle(.primary)
+                            .disabled(isEditingPrimaryOrder)
                             
                             Spacer()
                             
@@ -847,15 +1126,18 @@ struct TodayView: View {
                         }
                         .swipeActions(edge: .trailing) {
                             Button(role: .destructive) {
-                                removeExerciseFromCurrentDay(exercise)
+                                removeExerciseFromLane(exercise, isSecondary: false)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
                         }
                     }
+                    .onMove(perform: movePrimaryExercise)
                     
-                    // Add Exercise Button
-                    Button(action: { showingAddExercise = true }) {
+                    Button(action: {
+                        addingToSecondaryLane = false
+                        showingAddExercise = true
+                    }) {
                         HStack {
                             Image(systemName: "plus.circle.fill")
                             Text("Add Exercise")
@@ -863,6 +1145,95 @@ struct TodayView: View {
                         .foregroundColor(.blue)
                     }
                 }
+                .environment(\.editMode, .constant(isEditingPrimaryOrder ? .active : .inactive))
+                
+                // MARK: - Secondary Lane
+                Section(header: HStack {
+                    Menu {
+                        Button("None") {
+                            dailyWorkout.updateDualFocus(primaryId: dailyWorkout.dayId, secondaryId: nil)
+                        }
+                        Divider()
+                        ForEach(configManager.workoutDays.filter { $0.id != dailyWorkout.dayId }, id: \.id) { dayConfig in
+                            Button(dayConfig.name) {
+                                dailyWorkout.updateDualFocus(primaryId: dailyWorkout.dayId, secondaryId: dayConfig.id)
+                            }
+                        }
+                    } label: {
+                        HStack(spacing: 4) {
+                            Text(dailyWorkout.secondaryDayName ?? "Add Secondary")
+                                .font(.headline)
+                                .foregroundStyle(dailyWorkout.secondaryDayId != nil ? .primary : .secondary)
+                            Image(systemName: "chevron.down")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    if dailyWorkout.secondaryDayId != nil {
+                        Button(isEditingSecondaryOrder ? "Done" : "Reorder") {
+                            withAnimation { isEditingSecondaryOrder.toggle() }
+                        }
+                        .font(.caption2)
+                        .foregroundStyle(.blue)
+                    }
+                }) {
+                    if dailyWorkout.secondaryDayId != nil {
+                        ForEach(secondaryExercises, id: \.self) { exercise in
+                            HStack {
+                                if isEditingSecondaryOrder {
+                                    Image(systemName: "line.3.horizontal")
+                                        .foregroundStyle(.secondary)
+                                        .padding(.trailing, 4)
+                                }
+                                
+                                Button(exercise) {
+                                    if !isEditingSecondaryOrder {
+                                        selectedExercise = ExerciseSelection(name: exercise)
+                                    }
+                                }
+                                .foregroundStyle(.primary)
+                                .disabled(isEditingSecondaryOrder)
+                                
+                                Spacer()
+                                
+                                let sets = dailyWorkout.getSets(for: exercise)
+                                if !sets.isEmpty {
+                                    let completedCount = sets.filter { $0.completed }.count
+                                    Text("\(completedCount)/\(sets.count)")
+                                        .foregroundStyle(completedCount > 0 ? .green : .secondary)
+                                        .font(.caption)
+                                }
+                            }
+                            .swipeActions(edge: .trailing) {
+                                Button(role: .destructive) {
+                                    removeExerciseFromLane(exercise, isSecondary: true)
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                        }
+                        .onMove(perform: moveSecondaryExercise)
+                        
+                        Button(action: {
+                            addingToSecondaryLane = true
+                            showingAddExercise = true
+                        }) {
+                            HStack {
+                                Image(systemName: "plus.circle.fill")
+                                Text("Add Exercise")
+                            }
+                            .foregroundColor(.blue)
+                        }
+                    } else {
+                        Text("Select a secondary workout type above")
+                            .foregroundStyle(.secondary)
+                            .font(.caption)
+                    }
+                }
+                .environment(\.editMode, .constant(isEditingSecondaryOrder ? .active : .inactive))
                 
                 Section("Notes") {
                     TextEditor(text: Binding(
@@ -896,27 +1267,27 @@ struct TodayView: View {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     VStack(spacing: 2) {
-                        Text(dailyWorkout.dayName)
-                            .font(.system(size: 28, weight: .heavy))
+                        Text("Today's Workout")
+                            .font(.system(size: 24, weight: .heavy))
                             .foregroundStyle(.primary)
-                            .minimumScaleFactor(0.8)
-                            .lineLimit(1)
                         Text(Date().formatted(date: .abbreviated, time: .omitted))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
                 }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    NavigationLink(destination: ChatView().environmentObject(voiceAgent)) {
+                        Image(systemName: "message.fill")
+                            .foregroundColor(.blue)
+                    }
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Menu(dailyWorkout.dayName) {
-                        ForEach(WorkoutConfigManager.shared.workoutDays, id: \.id) { dayConfig in
-                            Button(dayConfig.name) {
-                                dailyWorkout.updateDay(dayConfig.id)
-                            }
-                        }
-                        Divider()
+                    Menu {
                         Button("Restore default exercises") {
                             confirmRestoreDefaults = true
                         }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
                     }
                 }
             }
@@ -939,7 +1310,7 @@ struct TodayView: View {
             AddExerciseQuickSheet(
                 exerciseName: $newExerciseName,
                 onSave: { exerciseName in
-                    addExerciseToCurrentDay(exerciseName)
+                    addExerciseToLane(exerciseName, isSecondary: addingToSecondaryLane)
                 }
             )
         }
@@ -952,6 +1323,117 @@ struct TodayView: View {
             Text("This will replace today's exercise list with the default set for \(dailyWorkout.dayName).")
         }
         // Removed timer-finished alerts so finishing a timer only plays a sound and keeps context
+        .onAppear {
+            setupVoiceAgentHooks()
+        }
+    }
+    
+    private func setupVoiceAgentHooks() {
+        // Set up navigation handler
+        voiceAgent.intentRouter.setNavigationHandler { [weak dailyWorkout] destination, argument in
+            Task { @MainActor in
+                switch destination {
+                case "today":
+                    // Already on today view
+                    break
+                case "templates":
+                    // Would navigate to templates - for now just log
+                    print("Navigate to templates: \(argument ?? "")")
+                default:
+                    print("Navigate to \(destination): \(argument ?? "")")
+                }
+            }
+        }
+        
+        // Set up exercise selection handler
+        voiceAgent.intentRouter.setExerciseSelectionHandler { exerciseName in
+            Task { @MainActor in
+                self.selectedExercise = ExerciseSelection(name: exerciseName)
+            }
+        }
+        
+        // Set up log set handler
+        voiceAgent.intentRouter.setLogSetHandler { [weak dailyWorkout] exercise, reps, weight, rpe, notes in
+            Task { @MainActor in
+                guard let dailyWorkout = dailyWorkout else { return }
+                
+                // Find or create sets for this exercise
+                var sets = dailyWorkout.getSets(for: exercise)
+                
+                // Check if there's an incomplete set to update
+                if let lastSetIndex = sets.lastIndex(where: { !$0.completed }) {
+                    // Update existing incomplete set
+                    let dataType = ExerciseDataType.type(for: exercise)
+                    dailyWorkout.updateSet(
+                        exercise: exercise,
+                        index: lastSetIndex,
+                        weight: weight,
+                        reps: reps,
+                        warmup: false,
+                        completed: true,
+                        minutes: dataType == .time ? sets[lastSetIndex].minutes ?? 0 : 0,
+                        seconds: dataType == .time ? sets[lastSetIndex].seconds ?? 0 : 0,
+                        shotsMade: dataType == .shots ? sets[lastSetIndex].shotsMade ?? 0 : 0
+                    )
+                } else {
+                    // Create new set
+                    let dataType = ExerciseDataType.type(for: exercise)
+                    let newSet: SetData
+                    switch dataType {
+                    case .time:
+                        newSet = SetData(weight: 0, reps: 0, warmup: false, completed: true, minutes: 0, seconds: 0)
+                    case .shots:
+                        newSet = SetData(weight: 0, reps: 0, warmup: false, completed: true, shotsMade: 0)
+                    case .count:
+                        newSet = SetData(weight: 0, reps: reps, warmup: false, completed: true)
+                    case .weightReps:
+                        newSet = SetData(weight: weight, reps: reps, warmup: false, completed: true)
+                    }
+                    dailyWorkout.addSet(to: exercise, set: newSet)
+                }
+            }
+        }
+        
+        // Set up undo handler
+        voiceAgent.intentRouter.setUndoSetHandler { [weak dailyWorkout] exerciseName in
+            Task { @MainActor in
+                guard let dailyWorkout = dailyWorkout else { return }
+                
+                if let exerciseName = exerciseName {
+                    // Undo last set for specific exercise
+                    var sets = dailyWorkout.getSets(for: exerciseName)
+                    if let lastIndex = sets.lastIndex(where: { $0.completed }) {
+                        dailyWorkout.removeSet(from: exerciseName, at: lastIndex)
+                    }
+                } else {
+                    // Undo last set from any exercise
+                    var lastExercise: String?
+                    var lastIndex: Int?
+                    var lastDate: Date?
+                    
+                    for (exName, sets) in dailyWorkout.exercises {
+                        for (index, set) in sets.enumerated() {
+                            if set.completed, let completionDate = set.completionDate {
+                                if lastDate == nil || completionDate > lastDate! {
+                                    lastExercise = exName
+                                    lastIndex = index
+                                    lastDate = completionDate
+                                }
+                            }
+                        }
+                    }
+                    
+                    if let exercise = lastExercise, let index = lastIndex {
+                        dailyWorkout.removeSet(from: exercise, at: index)
+                    }
+                }
+            }
+        }
+        
+        // Wire up services
+        voiceAgent.intentRouter.setDailyWorkout(dailyWorkout)
+        voiceAgent.intentRouter.setWeightService(voiceAgent.weightRecommendationService)
+        voiceAgent.intentRouter.setHistoryProvider(voiceAgent.historySummaryProvider)
     }
 }
 

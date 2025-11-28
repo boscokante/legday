@@ -8,12 +8,22 @@ struct WorkoutDayConfig: Identifiable, Codable {
     var isDefault: Bool  // Can't delete default days
 }
 
+// Dual-focus preset for combining two workout types in one session
+struct DualFocusPreset: Identifiable, Codable {
+    var id: String
+    var name: String
+    var primaryDayId: String
+    var secondaryDayId: String?
+}
+
 class WorkoutConfigManager: ObservableObject {
     @Published var workoutDays: [WorkoutDayConfig] = []
     @Published var allExercises: [String] = []  // Master exercise list
+    @Published var dualFocusPresets: [DualFocusPreset] = []
     
     private let workoutDaysKey = "workoutDays"
     private let allExercisesKey = "allExercises"
+    private let dualFocusPresetsKey = "dualFocusPresets"
     
     static let shared = WorkoutConfigManager()
     
@@ -21,6 +31,8 @@ class WorkoutConfigManager: ObservableObject {
         loadData()
         if workoutDays.isEmpty {
             initializeDefaultData()
+        } else {
+            migrateDefaultDays()
         }
     }
     
@@ -35,6 +47,36 @@ class WorkoutConfigManager: ObservableObject {
         if let data = UserDefaults.standard.data(forKey: allExercisesKey),
            let decoded = try? JSONDecoder().decode([String].self, from: data) {
             allExercises = decoded
+        }
+        
+        // Load dual focus presets
+        if let data = UserDefaults.standard.data(forKey: dualFocusPresetsKey),
+           let decoded = try? JSONDecoder().decode([DualFocusPreset].self, from: data) {
+            dualFocusPresets = decoded
+        } else {
+            initializeDefaultDualFocusPresets()
+        }
+    }
+    
+    private func initializeDefaultDualFocusPresets() {
+        dualFocusPresets = [
+            DualFocusPreset(id: "legs-achilles-heavy", name: "Legs + Achilles Heavy", primaryDayId: "leg", secondaryDayId: "achilles-heavy"),
+            DualFocusPreset(id: "legs-achilles-light", name: "Legs + Achilles Light", primaryDayId: "leg", secondaryDayId: "achilles-light"),
+            DualFocusPreset(id: "push-core", name: "Push + Core", primaryDayId: "push", secondaryDayId: "core"),
+            DualFocusPreset(id: "push-achilles-heavy", name: "Push + Achilles Heavy", primaryDayId: "push", secondaryDayId: "achilles-heavy"),
+            DualFocusPreset(id: "push-achilles-light", name: "Push + Achilles Light", primaryDayId: "push", secondaryDayId: "achilles-light"),
+            DualFocusPreset(id: "pull-core", name: "Pull + Core", primaryDayId: "pull", secondaryDayId: "core"),
+            DualFocusPreset(id: "pull-achilles-heavy", name: "Pull + Achilles Heavy", primaryDayId: "pull", secondaryDayId: "achilles-heavy"),
+            DualFocusPreset(id: "pull-achilles-light", name: "Pull + Achilles Light", primaryDayId: "pull", secondaryDayId: "achilles-light"),
+            DualFocusPreset(id: "hoop-achilles-light", name: "Hoop + Achilles Light", primaryDayId: "hoop", secondaryDayId: "achilles-light"),
+            DualFocusPreset(id: "legs-core", name: "Legs + Core", primaryDayId: "leg", secondaryDayId: "core"),
+        ]
+        saveDualFocusPresets()
+    }
+    
+    func saveDualFocusPresets() {
+        if let encoded = try? JSONEncoder().encode(dualFocusPresets) {
+            UserDefaults.standard.set(encoded, forKey: dualFocusPresetsKey)
         }
     }
     
@@ -85,7 +127,17 @@ class WorkoutConfigManager: ObservableObject {
             "Band Walks (Ankles)",
             "Single Leg Stance on Foam",
             "Standing Calf Isometrics",
-            "Sitting Calf Isometrics"
+            "Sitting Calf Isometrics",
+            
+            // Hoop Day exercises
+            "Five-on-five games",
+            "One-on-one games",
+            "10-minute shooting drill score",
+            
+            // Bike Day exercises
+            "Yankee Hill laps",
+            "Yankee Hill lap time",
+            "Jog minutes"
         ]
         
         // Initialize default workout days
@@ -153,6 +205,26 @@ class WorkoutConfigManager: ObservableObject {
                 exercises: [
                     "Standing Calf Isometrics",
                     "Sitting Calf Isometrics"
+                ],
+                isDefault: true
+            ),
+            WorkoutDayConfig(
+                id: "hoop",
+                name: "Hoop Day",
+                exercises: [
+                    "Five-on-five games",
+                    "One-on-one games",
+                    "10-minute shooting drill score"
+                ],
+                isDefault: true
+            ),
+            WorkoutDayConfig(
+                id: "bike",
+                name: "Bike Day",
+                exercises: [
+                    "Yankee Hill laps",
+                    "Yankee Hill lap time",
+                    "Jog minutes"
                 ],
                 isDefault: true
             )
@@ -275,6 +347,16 @@ class WorkoutConfigManager: ObservableObject {
                 "Standing Calf Isometrics",
                 "Sitting Calf Isometrics"
             ],
+            "Hoop Day": [
+                "Five-on-five games",
+                "One-on-one games",
+                "10-minute shooting drill score"
+            ],
+            "Bike Day": [
+                "Yankee Hill laps",
+                "Yankee Hill lap time",
+                "Jog minutes"
+            ]
         ]
     }
 
@@ -306,10 +388,103 @@ class WorkoutConfigManager: ObservableObject {
         saveData()
     }
     
+    // MARK: - Migration
+    
+    private func migrateDefaultDays() {
+        let defaultDaysMap: [String: (id: String, exercises: [String])] = [
+            "Leg Day": ("leg", [
+                "Bulgarian Split Squat",
+                "Leg Press",
+                "Single-Leg Extension",
+                "Hamstring Curl",
+                "Standing Calf Raise",
+                "Seated Calf Raise",
+                "Box Jumps"
+            ]),
+            "Push Day": ("push", [
+                "Bench Press",
+                "Incline Bench",
+                "Dips"
+            ]),
+            "Pull Day": ("pull", [
+                "Single-Arm Row",
+                "Single-Arm Dumbbell Row",
+                "Pull-Ups",
+                "Lat Pulldown",
+                "Dumbbell Curls"
+            ]),
+            "Core Day": ("core", [
+                "Watkins Core Program",
+                "Cable Crunches",
+                "Hanging Knee Raises (Pike)"
+            ]),
+            "Achilles Rehab Heavy": ("achilles-heavy", [
+                "Single Leg Heel Raises",
+                "Standing Calf Stretch",
+                "Band Walks (Ankles)",
+                "Single Leg Stance on Foam"
+            ]),
+            "Achilles Rehab Light": ("achilles-light", [
+                "Standing Calf Isometrics",
+                "Sitting Calf Isometrics"
+            ]),
+            "Hoop Day": ("hoop", [
+                "Five-on-five games",
+                "One-on-one games",
+                "10-minute shooting drill score"
+            ]),
+            "Bike Day": ("bike", [
+                "Yankee Hill laps",
+                "Yankee Hill lap time",
+                "Jog minutes"
+            ])
+        ]
+        
+        var needsSave = false
+        
+        // Add missing default days
+        for (name, config) in defaultDaysMap {
+            let exists = workoutDays.contains { $0.name == name }
+            if !exists {
+                let newDay = WorkoutDayConfig(
+                    id: config.id,
+                    name: name,
+                    exercises: config.exercises,
+                    isDefault: true
+                )
+                workoutDays.append(newDay)
+                needsSave = true
+            }
+        }
+        
+        // Ensure all default exercises are in the master list
+        let allDefaultExercises = defaultDaysMap.values.flatMap { $0.exercises }
+        for exercise in allDefaultExercises {
+            if !allExercises.contains(exercise) {
+                allExercises.append(exercise)
+                needsSave = true
+            }
+        }
+        
+        if needsSave {
+            objectWillChange.send()
+            allExercises.sort()
+            saveData()
+        }
+    }
+    
     // MARK: - Helper Methods
     
     func getExercisesForDay(dayId: String) -> [String] {
         return getWorkoutDay(id: dayId)?.exercises ?? []
+    }
+    
+    func getExercisesForDualFocus(primaryDayId: String, secondaryDayId: String?) -> [String] {
+        var exercises = getExercisesForDay(dayId: primaryDayId)
+        if let secondaryId = secondaryDayId {
+            exercises += getExercisesForDay(dayId: secondaryId)
+        }
+        return exercises
     }
     
     func getDefaultDayId() -> String {
