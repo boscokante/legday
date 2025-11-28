@@ -7,7 +7,6 @@ struct HistoryView: View {
     @State private var editingNotes: String = ""
     @State private var editingDateIndex: Int? = nil
     @State private var editingDate: Date = Date()
-    @State private var refreshId = UUID()
     
     var body: some View {
         NavigationStack {
@@ -119,7 +118,6 @@ struct HistoryView: View {
                     }
                 }
             }
-            .id(refreshId)
             .navigationTitle("History")
             .onAppear(perform: load)
         }
@@ -135,6 +133,10 @@ struct HistoryView: View {
         let normalized = Calendar.current.startOfDay(for: editingDate).timeIntervalSince1970
         print("📅 Saving date: \(editingDate) -> normalized: \(normalized)")
         
+        // Get the workout we're modifying by its current date (for finding it after re-sort)
+        let oldDate = workouts[index]["date"] as? TimeInterval
+        let dayName = workouts[index]["day"] as? String
+        
         // Create a mutable copy and update the date
         var updatedWorkouts = workouts
         var updatedWorkout = updatedWorkouts[index]
@@ -146,12 +148,20 @@ struct HistoryView: View {
             let jsonData = try JSONSerialization.data(withJSONObject: updatedWorkouts)
             UserDefaults.standard.set(jsonData, forKey: "savedWorkouts")
             UserDefaults.standard.synchronize()
-            print("✅ Saved date to UserDefaults")
+            print("✅ Saved date to UserDefaults - old: \(oldDate ?? 0), new: \(normalized), day: \(dayName ?? "unknown")")
             
+            // Clear editing state first
             editingDateIndex = nil
-            // Update local state and refresh
-            workouts = updatedWorkouts
-            refreshId = UUID()
+            
+            // Re-sort the workouts after the date change (since sort order may have changed)
+            workouts = updatedWorkouts.sorted { lhs, rhs in
+                let lhsDate = lhs["date"] as? TimeInterval ?? 0
+                let rhsDate = rhs["date"] as? TimeInterval ?? 0
+                return lhsDate > rhsDate
+            }
+            
+            // DON'T change refreshId - it causes onAppear to reload from UserDefaults
+            // The @State update is sufficient to trigger a re-render
         } catch {
             print("❌ Error saving date: \(error)")
         }
@@ -169,11 +179,13 @@ struct HistoryView: View {
             let jsonData = try JSONSerialization.data(withJSONObject: updatedWorkouts)
             UserDefaults.standard.set(jsonData, forKey: "savedWorkouts")
             UserDefaults.standard.synchronize() // Force immediate save
+            
+            // Clear editing state
             editingWorkoutIndex = nil
             editingNotes = ""
-            // Reload to ensure UI updates
-            load()
-            refreshId = UUID()
+            
+            // Update local state directly - DON'T call load() as it can cause race conditions
+            workouts = updatedWorkouts
         } catch {
             print("Error saving notes: \(error)")
         }
@@ -196,7 +208,6 @@ extension HistoryView {
             let rhsDate = rhs["date"] as? TimeInterval ?? 0
             return lhsDate > rhsDate
         }
-        refreshId = UUID()
     }
     
     private func formatSetSummary(exerciseName: String, sets: [[String: Any]]) -> String {
