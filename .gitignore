@@ -15,3 +15,6 @@ DerivedData/
 # IDEs
 .idea/
 .vscode/
+
+# Secrets - API keys and sensitive config
+LegDay/LegDay/Agent/Config/Secrets.swift.specstory/

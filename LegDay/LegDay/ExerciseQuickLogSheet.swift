@@ -1,12 +1,52 @@
 import SwiftUI
 
 struct SetData: Identifiable, Equatable, Codable {
-    let id = UUID()
+    var id: UUID
     var weight: Double
     var reps: Int
     var warmup: Bool
     var completed: Bool = false  // Only save sets marked as completed
     var completionDate: Date?  // Date when set was marked as completed
+    
+    // Time-based fields (for bike day)
+    var minutes: Int?  // Minutes for lap time or jog time
+    var seconds: Int?  // Seconds for lap time or jog time
+    
+    // Shots fields (for hoop day)
+    var shotsMade: Int?  // Shots made in shooting drill
+    
+    init(id: UUID = UUID(), weight: Double = 0, reps: Int = 0, warmup: Bool = false, completed: Bool = false, completionDate: Date? = nil, minutes: Int? = nil, seconds: Int? = nil, shotsMade: Int? = nil) {
+        self.id = id
+        self.weight = weight
+        self.reps = reps
+        self.warmup = warmup
+        self.completed = completed
+        self.completionDate = completionDate
+        self.minutes = minutes
+        self.seconds = seconds
+        self.shotsMade = shotsMade
+    }
+}
+
+// Helper to determine exercise data type
+enum ExerciseDataType {
+    case weightReps  // Standard weight × reps
+    case time        // Minutes and seconds (bike day lap time, jog time)
+    case shots       // Shots made (hoop day shooting drill)
+    case count       // Just a count (games, laps)
+    
+    static func type(for exerciseName: String) -> ExerciseDataType {
+        switch exerciseName {
+        case "Yankee Hill lap time", "Jog minutes":
+            return .time
+        case "10-minute shooting drill score":
+            return .shots
+        case "Yankee Hill laps", "Five-on-five games", "One-on-one games":
+            return .count
+        default:
+            return .weightReps
+        }
+    }
 }
 
 struct ExerciseSessionSheet: View {
@@ -157,13 +197,26 @@ struct ExerciseSessionSheet: View {
                     .onDelete(perform: deleteSets)
                     
                     Button("+ Set") {
-                        let newSet = SetData(weight: 0, reps: 10, warmup: false)
+                        let dataType = ExerciseDataType.type(for: exerciseName)
+                        let newSet: SetData
+                        switch dataType {
+                        case .time:
+                            newSet = SetData(minutes: 0, seconds: 0)
+                        case .shots:
+                            newSet = SetData(shotsMade: 0)
+                        case .count:
+                            newSet = SetData(reps: 0)
+                        case .weightReps:
+                            newSet = SetData(weight: 0, reps: 10)
+                        }
                         dailyWorkout.addSet(to: exerciseName, set: newSet)
                     }
                     
-                    Button("Warmup Preset (10×0)") {
-                        let warmupSet = SetData(weight: 0, reps: 10, warmup: true)
-                        dailyWorkout.addSet(to: exerciseName, set: warmupSet)
+                    if ExerciseDataType.type(for: exerciseName) == .weightReps {
+                        Button("Warmup Preset (10×0)") {
+                            let warmupSet = SetData(weight: 0, reps: 10, warmup: true)
+                            dailyWorkout.addSet(to: exerciseName, set: warmupSet)
+                        }
                     }
                 }
                 
@@ -189,7 +242,31 @@ struct ExerciseSessionSheet: View {
                                         .font(.subheadline)
                                         .foregroundStyle(.secondary)
                                     
-                                    if set.weight > 0 && set.reps > 0 {
+                                    let dataType = ExerciseDataType.type(for: exerciseName)
+                                    if dataType == .time {
+                                        if let mins = set.minutes, let secs = set.seconds {
+                                            Text("\(mins):\(String(format: "%02d", secs))")
+                                                .font(.subheadline)
+                                        } else {
+                                            Text("Not set")
+                                                .font(.subheadline)
+                                                .foregroundStyle(.secondary)
+                                                .italic()
+                                        }
+                                    } else if dataType == .shots {
+                                        if let shots = set.shotsMade {
+                                            Text("\(shots) shots")
+                                                .font(.subheadline)
+                                        } else {
+                                            Text("Not set")
+                                                .font(.subheadline)
+                                                .foregroundStyle(.secondary)
+                                                .italic()
+                                        }
+                                    } else if dataType == .count && set.reps > 0 {
+                                        Text("\(set.reps) count")
+                                            .font(.subheadline)
+                                    } else if set.weight > 0 && set.reps > 0 {
                                         Text("\(set.weight, specifier: "%.0f") lbs × \(set.reps) reps")
                                             .font(.subheadline)
                                     } else {
@@ -219,20 +296,23 @@ struct ExerciseSessionSheet: View {
                             
                             Divider()
                             
-                            let completedSets = sets.filter { $0.completed }
-                            let totalVolume = completedSets.reduce(0.0) { total, set in
-                                total + (set.weight * Double(set.reps))
+                            let dataType = ExerciseDataType.type(for: exerciseName)
+                            if dataType == .weightReps {
+                                let completedSets = sets.filter { $0.completed }
+                                let totalVolume = completedSets.reduce(0.0) { total, set in
+                                    total + (set.weight * Double(set.reps))
+                                }
+                                
+                                HStack {
+                                    Text("Total Volume:")
+                                        .font(.headline)
+                                    Spacer()
+                                    Text("\(totalVolume, specifier: "%.0f") lbs")
+                                        .font(.headline)
+                                        .foregroundStyle(.blue)
+                                }
+                                .padding(.top, 4)
                             }
-                            
-                            HStack {
-                                Text("Total Volume:")
-                                    .font(.headline)
-                                Spacer()
-                                Text("\(totalVolume, specifier: "%.0f") lbs")
-                                    .font(.headline)
-                                    .foregroundStyle(.blue)
-                            }
-                            .padding(.top, 4)
                         }
                         
                         Divider()
@@ -294,6 +374,17 @@ struct EditableSetRowView: View {
     @State private var isWarmup: Bool = false
     @State private var isCompleted: Bool = false
     
+    // Time-based fields
+    @State private var minutes: Int = 0
+    @State private var seconds: Int = 0
+    
+    // Shots field
+    @State private var shotsMade: Int = 0
+    
+    private var dataType: ExerciseDataType {
+        ExerciseDataType.type(for: exerciseName)
+    }
+    
     var body: some View {
         HStack(spacing: 8) {
             // Completion checkbox
@@ -312,46 +403,134 @@ struct EditableSetRowView: View {
                 .font(.body.weight(.medium))
                 .opacity(isCompleted ? 1.0 : 0.5)
             
-            // Weight field with label
-            HStack(spacing: 4) {
-                TextField("0", value: $weight, format: .number)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .foregroundStyle(.blue)
-                    .font(.body.weight(.semibold))
-                    .keyboardType(.decimalPad)
-                    .focused($focusedField)
-                    .onChange(of: weight) { _, newValue in
-                        updateSet()
-                    }
-                    .opacity(isCompleted ? 1.0 : 0.5)
-                Text("lbs")
-                    .font(.caption)
+            switch dataType {
+            case .time:
+                // Time input: minutes and seconds
+                HStack(spacing: 4) {
+                    TextField("0", value: $minutes, format: .number)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .foregroundStyle(.blue)
+                        .font(.body.weight(.semibold))
+                        .keyboardType(.numberPad)
+                        .focused($focusedField)
+                        .onChange(of: minutes) { _, _ in
+                            updateSet()
+                        }
+                        .frame(width: 50)
+                        .opacity(isCompleted ? 1.0 : 0.5)
+                    Text("min")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 28, alignment: .leading)
+                        .opacity(isCompleted ? 1.0 : 0.5)
+                    
+                    TextField("0", value: $seconds, format: .number)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .foregroundStyle(.blue)
+                        .font(.body.weight(.semibold))
+                        .keyboardType(.numberPad)
+                        .focused($focusedField)
+                        .onChange(of: seconds) { _, newValue in
+                            // Clamp seconds to 0-59
+                            if newValue > 59 {
+                                seconds = 59
+                            } else if newValue < 0 {
+                                seconds = 0
+                            }
+                            updateSet()
+                        }
+                        .frame(width: 50)
+                        .opacity(isCompleted ? 1.0 : 0.5)
+                    Text("sec")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 28, alignment: .leading)
+                        .opacity(isCompleted ? 1.0 : 0.5)
+                }
+                
+            case .shots:
+                // Shots input
+                HStack(spacing: 4) {
+                    TextField("0", value: $shotsMade, format: .number)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .foregroundStyle(.blue)
+                        .font(.body.weight(.semibold))
+                        .keyboardType(.numberPad)
+                        .focused($focusedField)
+                        .onChange(of: shotsMade) { _, _ in
+                            updateSet()
+                        }
+                        .frame(width: 70)
+                        .opacity(isCompleted ? 1.0 : 0.5)
+                    Text("shots")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 40, alignment: .leading)
+                        .opacity(isCompleted ? 1.0 : 0.5)
+                }
+                
+            case .count:
+                // Just count (no weight)
+                HStack(spacing: 4) {
+                    TextField("0", value: $reps, format: .number)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .foregroundStyle(.blue)
+                        .font(.body.weight(.semibold))
+                        .keyboardType(.numberPad)
+                        .focused($focusedField)
+                        .onChange(of: reps) { _, newValue in
+                            updateSet()
+                        }
+                        .frame(width: 70)
+                        .opacity(isCompleted ? 1.0 : 0.5)
+                    Text("count")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 40, alignment: .leading)
+                        .opacity(isCompleted ? 1.0 : 0.5)
+                }
+                
+            case .weightReps:
+                // Standard weight × reps
+                HStack(spacing: 4) {
+                    TextField("0", value: $weight, format: .number)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .foregroundStyle(.blue)
+                        .font(.body.weight(.semibold))
+                        .keyboardType(.decimalPad)
+                        .focused($focusedField)
+                        .onChange(of: weight) { _, newValue in
+                            updateSet()
+                        }
+                        .opacity(isCompleted ? 1.0 : 0.5)
+                    Text("lbs")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 28, alignment: .leading)
+                        .opacity(isCompleted ? 1.0 : 0.5)
+                }
+                
+                Text("×")
                     .foregroundStyle(.secondary)
-                    .frame(width: 28, alignment: .leading)
+                    .font(.title3)
                     .opacity(isCompleted ? 1.0 : 0.5)
-            }
-            
-            Text("×")
-                .foregroundStyle(.secondary)
-                .font(.title3)
-                .opacity(isCompleted ? 1.0 : 0.5)
-            
-            // Reps field with label
-            HStack(spacing: 4) {
-                TextField("0", value: $reps, format: .number)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .keyboardType(.numberPad)
-                    .focused($focusedField)
-                    .onChange(of: reps) { _, newValue in
-                        updateSet()
-                    }
-                    .frame(width: 50)
-                    .opacity(isCompleted ? 1.0 : 0.5)
-                Text("reps")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .frame(width: 32, alignment: .leading)
-                    .opacity(isCompleted ? 1.0 : 0.5)
+                
+                HStack(spacing: 4) {
+                    TextField("0", value: $reps, format: .number)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .keyboardType(.numberPad)
+                        .focused($focusedField)
+                        .onChange(of: reps) { _, newValue in
+                            updateSet()
+                        }
+                        .frame(width: 50)
+                        .opacity(isCompleted ? 1.0 : 0.5)
+                    Text("reps")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 32, alignment: .leading)
+                        .opacity(isCompleted ? 1.0 : 0.5)
+                }
             }
             
             if isWarmup { 
@@ -375,6 +554,9 @@ struct EditableSetRowView: View {
             reps = set.reps
             isWarmup = set.warmup
             isCompleted = set.completed
+            minutes = set.minutes ?? 0
+            seconds = set.seconds ?? 0
+            shotsMade = set.shotsMade ?? 0
         }
     }
     
@@ -385,7 +567,10 @@ struct EditableSetRowView: View {
             weight: weight,
             reps: reps,
             warmup: isWarmup,
-            completed: isCompleted
+            completed: isCompleted,
+            minutes: minutes,
+            seconds: seconds,
+            shotsMade: shotsMade
         )
     }
 }

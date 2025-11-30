@@ -38,7 +38,7 @@ struct SeedData {
             ("Box Jumps", false)
         ]
 
-        for (index, exerciseInfo) in exercises.enumerated() {
+        for (_, exerciseInfo) in exercises.enumerated() {
             let templateExercise = TemplateExercise(context: context)
             templateExercise.id = UUID()
             templateExercise.name = exerciseInfo.0

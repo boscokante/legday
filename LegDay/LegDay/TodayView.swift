@@ -448,7 +448,7 @@ class DailyWorkoutSession: ObservableObject {
         }
     }
     
-    func saveCompleteWorkout() {
+    func saveCompleteWorkout(resetState: Bool = true) {
         // Save current day to memory first
         saveCurrentDayToMemory()
         
@@ -490,35 +490,62 @@ class DailyWorkoutSession: ObservableObject {
         var workoutsToSave: [[String: Any]] = []
         var daysWorked: Set<String> = []
         
-        // Process current day
+        // Helper to convert sets to dict format
+        func setsToDict(_ sets: [SetData]) -> [[String: Any]] {
+            sets.filter { $0.completed }.map { set in
+                var setDict: [String: Any] = ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
+                if let minutes = set.minutes { setDict["minutes"] = minutes }
+                if let seconds = set.seconds { setDict["seconds"] = seconds }
+                if let shotsMade = set.shotsMade { setDict["shotsMade"] = shotsMade }
+                return setDict
+            }
+        }
+        
+        // Get exercise lists for each lane
+        let primaryExerciseNames = Set(configManager.getExercisesForDay(dayId: dayId))
+        let secondaryExerciseNames: Set<String> = secondaryDayId != nil 
+            ? Set(configManager.getExercisesForDay(dayId: secondaryDayId!)) 
+            : []
+        
+        // Process primary lane exercises
         if !exercises.isEmpty {
-            var dayExercises: [String: [[String: Any]]] = [:]
-            for (exerciseName, sets) in exercises {
-                let completedSets = sets.filter { $0.completed }
-                if !completedSets.isEmpty {
-                    dayExercises[exerciseName] = completedSets.map { set in
-                        var setDict: [String: Any] = ["weight": set.weight, "reps": set.reps, "warmup": set.warmup]
-                        if let minutes = set.minutes {
-                            setDict["minutes"] = minutes
-                        }
-                        if let seconds = set.seconds {
-                            setDict["seconds"] = seconds
-                        }
-                        if let shotsMade = set.shotsMade {
-                            setDict["shotsMade"] = shotsMade
-                        }
-                        return setDict
-                    }
+            var primaryDayExercises: [String: [[String: Any]]] = [:]
+            for (exerciseName, sets) in exercises where primaryExerciseNames.contains(exerciseName) {
+                let completedSetsData = setsToDict(sets)
+                if !completedSetsData.isEmpty {
+                    primaryDayExercises[exerciseName] = completedSetsData
                 }
             }
             
-            if !dayExercises.isEmpty {
+            if !primaryDayExercises.isEmpty {
                 daysWorked.insert(dayName)
                 let workoutData: [String: Any] = [
                     "date": workoutDate.timeIntervalSince1970,
-                    "exercises": dayExercises,
+                    "exercises": primaryDayExercises,
                     "notes": notes.trimmingCharacters(in: .whitespacesAndNewlines),
                     "day": dayName
+                ]
+                workoutsToSave.append(workoutData)
+            }
+        }
+        
+        // Process secondary lane exercises (from current exercises dict)
+        if let secId = secondaryDayId, !exercises.isEmpty {
+            var secondaryDayExercises: [String: [[String: Any]]] = [:]
+            for (exerciseName, sets) in exercises where secondaryExerciseNames.contains(exerciseName) {
+                let completedSetsData = setsToDict(sets)
+                if !completedSetsData.isEmpty {
+                    secondaryDayExercises[exerciseName] = completedSetsData
+                }
+            }
+            
+            if !secondaryDayExercises.isEmpty, let secConfig = configManager.getWorkoutDay(id: secId) {
+                daysWorked.insert(secConfig.name)
+                let workoutData: [String: Any] = [
+                    "date": workoutDate.timeIntervalSince1970,
+                    "exercises": secondaryDayExercises,
+                    "notes": "", // Secondary lane doesn't have separate notes
+                    "day": secConfig.name
                 ]
                 workoutsToSave.append(workoutData)
             }
@@ -587,12 +614,26 @@ class DailyWorkoutSession: ObservableObject {
             UserDefaults.standard.set(jsonData, forKey: "savedWorkouts")
         }
         
-        // Clear temp storage after successful save
-        clearTempStorage()
-        dayWorkouts.removeAll()
+        if resetState {
+            // Clear temp storage after successful save
+            clearTempStorage()
+            dayWorkouts.removeAll()
+            
+            // Reset all completed flags to prevent auto-save from re-adding deleted workouts
+            for exerciseName in exercises.keys {
+                if var sets = exercises[exerciseName] {
+                    for i in 0..<sets.count {
+                        sets[i].completed = false
+                        sets[i].completionDate = nil
+                    }
+                    exercises[exerciseName] = sets
+                }
+            }
+            
+            // Clear notes after saving
+            notes = ""
+        }
         
-        // Clear notes after saving
-        notes = ""
         saveTodaysWorkout()
         
         let dateFormatter = DateFormatter()
@@ -603,9 +644,7 @@ class DailyWorkoutSession: ObservableObject {
             if let day = workout["day"] as? String, let exercises = workout["exercises"] as? [String: [[String: Any]]] {
                 print("  - \(day): \(exercises.count) exercises")
                 for (exercise, sets) in exercises {
-                    if let setArray = sets as? [[String: Any]] {
-                        print("    \(exercise): \(setArray.count) sets")
-                    }
+                    print("    \(exercise): \(sets.count) sets")
                 }
             }
         }
@@ -858,6 +897,7 @@ struct TodayView: View {
     @State private var selectedExercise: ExerciseSelection?
     @State private var showingSavedWorkouts: Bool = false
     @State private var showingWorkoutSaved: Bool = false
+    @State private var savedSetsCount: Int = 0
     @State private var showingAddExercise = false
     @State private var addingToSecondaryLane = false  // Track which lane we're adding to
     @State private var newExerciseName = ""
@@ -1245,6 +1285,7 @@ struct TodayView: View {
                 
                 Section {
                     Button("Save Today's Workout") {
+                        savedSetsCount = dailyWorkout.getCompletedSets()
                         dailyWorkout.saveCompleteWorkout()
                         showingWorkoutSaved = true
                     }
@@ -1304,7 +1345,7 @@ struct TodayView: View {
         .alert("Workout Saved!", isPresented: $showingWorkoutSaved) {
             Button("OK") { }
         } message: {
-            Text("Your workout with \(dailyWorkout.getCompletedSets()) completed sets has been saved!")
+            Text("Your workout with \(savedSetsCount) completed sets has been saved!")
         }
         .sheet(isPresented: $showingAddExercise) {
             AddExerciseQuickSheet(
@@ -1330,7 +1371,7 @@ struct TodayView: View {
     
     private func setupVoiceAgentHooks() {
         // Set up navigation handler
-        voiceAgent.intentRouter.setNavigationHandler { [weak dailyWorkout] destination, argument in
+        voiceAgent.intentRouter.setNavigationHandler { destination, argument in
             Task { @MainActor in
                 switch destination {
                 case "today":
@@ -1358,7 +1399,7 @@ struct TodayView: View {
                 guard let dailyWorkout = dailyWorkout else { return }
                 
                 // Find or create sets for this exercise
-                var sets = dailyWorkout.getSets(for: exercise)
+                let sets = dailyWorkout.getSets(for: exercise)
                 
                 // Check if there's an incomplete set to update
                 if let lastSetIndex = sets.lastIndex(where: { !$0.completed }) {
@@ -1401,7 +1442,7 @@ struct TodayView: View {
                 
                 if let exerciseName = exerciseName {
                     // Undo last set for specific exercise
-                    var sets = dailyWorkout.getSets(for: exerciseName)
+                    let sets = dailyWorkout.getSets(for: exerciseName)
                     if let lastIndex = sets.lastIndex(where: { $0.completed }) {
                         dailyWorkout.removeSet(from: exerciseName, at: lastIndex)
                     }

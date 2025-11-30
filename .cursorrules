@@ -1,0 +1,34 @@
+# LegDay Project Rules
+
+## OpenAI API Models (as of November 2025)
+
+**IMPORTANT**: GPT-5 has been released. Do NOT suggest downgrading to GPT-4 models.
+
+### Available Models:
+- `gpt-5` - Full GPT-5 model (released May 2025)
+- `gpt-5-mini` - Fast, cost-efficient version (released August 2025)
+- `gpt-5.1` - Latest iteration (if available)
+- `gpt-4o` - GPT-4 Omni (legacy, still available)
+- `gpt-4o-mini` - GPT-4 Omni Mini (legacy, still available)
+
+### For this project:
+- The coach chat uses `gpt-5-mini` for speed and cost efficiency
+- Do NOT change to gpt-4o-mini unless explicitly requested
+- If API errors occur, debug the actual error - don't assume it's the model name
+
+### GPT-5 API Differences from GPT-4:
+- Use `max_completion_tokens` instead of `max_tokens`
+- Streaming format is the same as GPT-4
+
+## Project Architecture
+- SwiftUI iOS app with MVVM pattern
+- Uses UserDefaults for workout history persistence
+- Voice agent uses OpenAI Realtime API
+- Text chat uses OpenAI Chat Completions API with streaming
+
+## Key Files
+- `ChatClient.swift` - Text chat API client (uses gpt-5-mini)
+- `OpenAIRealtimeSession.swift` - Voice agent WebSocket client
+- `HistorySummaryProvider.swift` - Workout history analysis
+- `TrainingProfile.swift` - User's training preferences
+

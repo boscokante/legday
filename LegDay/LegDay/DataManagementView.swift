@@ -1,15 +1,17 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
+extension URL: @retroactive Identifiable {
+    public var id: String { absoluteString }
+}
+
 struct DataManagementView: View {
-    @State private var showingExportSuccess = false
     @State private var showingImportPicker = false
     @State private var showingImportSuccess = false
     @State private var showingError = false
     @State private var errorMessage = ""
-    @State private var exportURL: URL?
-    @State private var showingShareSheet = false
-    @State private var isExporting = false
+    @State private var showingSplitSuccess = false
+    @State private var exportFileURL: URL?
     
     var body: some View {
         NavigationStack {
@@ -57,38 +59,28 @@ struct DataManagementView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                
+                Section("Utilities") {
+                    Button(action: splitCombinedWorkouts) {
+                        Label("Split Combined Workouts", systemImage: "scissors")
+                    }
+                    
+                    Text("Fixes old history where multiple workout days were combined into one entry. Creates separate entries for each day.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
             .navigationTitle("Data Management")
         }
-        .fileExporter(
-            isPresented: $showingShareSheet,
-            document: exportURL.map { LegDayDocument(url: $0) },
-            contentType: UTType(filenameExtension: "legday") ?? .data,
-            defaultFilename: {
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd"
-                return "LegDay_Backup_\(dateFormatter.string(from: Date())).legday"
-            }()
-        ) { result in
-            switch result {
-            case .success:
-                showingExportSuccess = true
-            case .failure(let error):
-                errorMessage = "Export failed: \(error.localizedDescription)"
-                showingError = true
-            }
+        .sheet(item: $exportFileURL) { url in
+            ShareSheet(activityItems: [url])
         }
         .fileImporter(
             isPresented: $showingImportPicker,
-            allowedContentTypes: [UTType(filenameExtension: "legday") ?? .data],
+            allowedContentTypes: [.json, .data],
             allowsMultipleSelection: false
         ) { result in
             handleImport(result: result)
-        }
-        .alert("Export Successful", isPresented: $showingExportSuccess) {
-            Button("OK") { }
-        } message: {
-            Text("Your workout data has been exported successfully!")
         }
         .alert("Import Successful", isPresented: $showingImportSuccess) {
             Button("OK") { }
@@ -100,6 +92,16 @@ struct DataManagementView: View {
         } message: {
             Text(errorMessage)
         }
+        .alert("Workouts Split", isPresented: $showingSplitSuccess) {
+            Button("OK") { }
+        } message: {
+            Text("Combined workouts have been split into separate entries for each workout day.")
+        }
+    }
+    
+    private func splitCombinedWorkouts() {
+        HistoryCodec.splitCombinedWorkouts()
+        showingSplitSuccess = true
     }
     
     private func loadMetricsCount() -> Int {
@@ -145,7 +147,7 @@ struct DataManagementView: View {
             ]
         }
         
-        let exportData: [String: Any] = [
+        let exportDict: [String: Any] = [
             "version": "1.0",
             "exportDate": Date().timeIntervalSince1970,
             "workouts": workouts,
@@ -155,13 +157,13 @@ struct DataManagementView: View {
         ]
         
         // Convert to JSON
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: exportData, options: .prettyPrinted) else {
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: exportDict, options: .prettyPrinted) else {
             errorMessage = "Failed to create export file"
             showingError = true
             return
         }
         
-        // Create temporary file
+        // Write to temp file
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString = dateFormatter.string(from: Date())
@@ -171,8 +173,7 @@ struct DataManagementView: View {
         
         do {
             try jsonData.write(to: tempURL)
-            exportURL = tempURL
-            showingShareSheet = true
+            exportFileURL = tempURL
         } catch {
             errorMessage = "Failed to save export file: \(error.localizedDescription)"
             showingError = true
@@ -203,24 +204,32 @@ struct DataManagementView: View {
                 if let workouts = importData["workouts"] as? [[String: Any]] {
                     var existingWorkouts = HistoryCodec.loadSavedWorkouts()
                     
-                    // Merge workouts, avoiding duplicates based on date
                     for workout in workouts {
                         if let date = workout["date"] as? TimeInterval {
-                            // Check if workout with same date already exists
-                            let isDuplicate = existingWorkouts.contains { existing in
+                            // Remove existing workout with same date (within same day)
+                            existingWorkouts.removeAll { existing in
                                 if let existingDate = existing["date"] as? TimeInterval {
-                                    return abs(existingDate - date) < 60 // Within 1 minute
+                                    return Calendar.current.isDate(
+                                        Date(timeIntervalSince1970: existingDate),
+                                        inSameDayAs: Date(timeIntervalSince1970: date)
+                                    )
                                 }
                                 return false
                             }
                             
-                            if !isDuplicate {
-                                existingWorkouts.append(workout)
-                            }
+                            // Clean up the workout data
+                            var cleanWorkout = workout
+                            cleanWorkout.removeValue(forKey: "_instructions")
+                            cleanWorkout.removeValue(forKey: "date_readable")
+                            
+                            existingWorkouts.append(cleanWorkout)
                         }
                     }
                     
-                    // Save merged workouts
+                    // Sort by date
+                    existingWorkouts.sort { ($0["date"] as? TimeInterval ?? 0) < ($1["date"] as? TimeInterval ?? 0) }
+                    
+                    // Save updated workouts
                     if let jsonData = try? JSONSerialization.data(withJSONObject: existingWorkouts) {
                         UserDefaults.standard.set(jsonData, forKey: "savedWorkouts")
                     }
@@ -234,12 +243,10 @@ struct DataManagementView: View {
                         existingMetrics = decoded
                     }
                     
-                    // Convert and merge metrics
                     for metricDict in metricsData {
                         if let timestamp = metricDict["date"] as? TimeInterval {
                             let date = Date(timeIntervalSince1970: timestamp)
                             
-                            // Check for duplicate
                             let isDuplicate = existingMetrics.contains { existing in
                                 Calendar.current.isDate(existing.date, inSameDayAs: date)
                             }
@@ -256,7 +263,6 @@ struct DataManagementView: View {
                         }
                     }
                     
-                    // Save merged metrics
                     if let encoded = try? JSONEncoder().encode(existingMetrics) {
                         UserDefaults.standard.set(encoded, forKey: "bodyMetrics")
                     }
@@ -266,14 +272,12 @@ struct DataManagementView: View {
                 if let workoutDaysData = importData["workoutDays"] as? [[String: Any]] {
                     let configManager = WorkoutConfigManager.shared
                     
-                    // Import workout days
                     for dayDict in workoutDaysData {
                         if let id = dayDict["id"] as? String,
                            let name = dayDict["name"] as? String,
                            let exercises = dayDict["exercises"] as? [String],
                            let isDefault = dayDict["isDefault"] as? Bool {
                             
-                            // Check if day already exists
                             if configManager.getWorkoutDay(id: id) == nil {
                                 let dayConfig = WorkoutDayConfig(
                                     id: id,
@@ -286,14 +290,12 @@ struct DataManagementView: View {
                         }
                     }
                     
-                    // Import exercises
                     if let allExercises = importData["allExercises"] as? [String] {
                         for exercise in allExercises {
                             configManager.addExercise(name: exercise)
                         }
                     }
                     
-                    // Save configurations
                     configManager.saveData()
                 }
                 
@@ -311,32 +313,15 @@ struct DataManagementView: View {
     }
 }
 
-import UniformTypeIdentifiers
-
-struct LegDayDocument: FileDocument {
-    static var readableContentTypes: [UTType] {
-        [UTType(filenameExtension: "legday") ?? .data]
+// UIKit share sheet wrapper
+struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
     }
     
-    var url: URL
-    
-    init(url: URL) {
-        self.url = url
-    }
-    
-    init(configuration: ReadConfiguration) throws {
-        guard let data = configuration.file.regularFileContents else {
-            throw CocoaError(.fileReadCorruptFile)
-        }
-        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("temp.legday")
-        try data.write(to: tempURL)
-        self.url = tempURL
-    }
-    
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let data = try Data(contentsOf: url)
-        return FileWrapper(regularFileWithContents: data)
-    }
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 struct DataManagementView_Previews: PreviewProvider {
@@ -344,4 +329,3 @@ struct DataManagementView_Previews: PreviewProvider {
         DataManagementView()
     }
 }
-

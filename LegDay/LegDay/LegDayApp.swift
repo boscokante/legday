@@ -35,7 +35,7 @@ struct LegDayApp: App {
         let completedCount = session.getCompletedSets()
         
         if completedCount > 0 {
-            session.saveCompleteWorkout()
+            session.saveCompleteWorkout(resetState: false)
             print("🔄 Auto-saved \(completedCount) completed sets on app background")
         }
     }
@@ -67,7 +67,7 @@ struct LegDayApp: App {
     }
     
     private func requestMicrophonePermission() {
-        AVAudioSession.sharedInstance().requestRecordPermission { granted in
+        AVAudioApplication.requestRecordPermission { granted in
             if granted {
                 print("✅ Microphone permission granted")
             } else {

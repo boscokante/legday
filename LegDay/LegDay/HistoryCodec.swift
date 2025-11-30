@@ -126,6 +126,168 @@ enum HistoryCodec {
             UserDefaults.standard.set(jsonData, forKey: "savedWorkouts")
         }
     }
+    
+    // Utility function to split combined workouts into separate entries
+    // This fixes old history where multiple days were combined into one entry
+    static func splitCombinedWorkouts() {
+        let saved = loadSavedWorkouts()
+        var updatedWorkouts: [[String: Any]] = []
+        
+        for workout in saved {
+            guard let dayString = workout["day"] as? String else {
+                updatedWorkouts.append(workout)
+                continue
+            }
+            
+            // Check if this is a combined workout (contains comma or multiple day names)
+            let dayNames = dayString.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            
+            if dayNames.count > 1 {
+                // This is a combined workout - split it
+                
+                guard let date = workout["date"] as? TimeInterval,
+                      let exercises = workout["exercises"] as? [String: [[String: Any]]],
+                      let notes = workout["notes"] as? String else {
+                    updatedWorkouts.append(workout)
+                    continue
+                }
+                
+                // Split notes by day (format: "Day Name: notes")
+                let notesLines = notes.components(separatedBy: "\n")
+                var notesByDay: [String: String] = [:]
+                for line in notesLines {
+                    for dayName in dayNames {
+                        if line.hasPrefix("\(dayName):") {
+                            let noteContent = String(line.dropFirst(dayName.count + 1)).trimmingCharacters(in: .whitespacesAndNewlines)
+                            notesByDay[dayName] = noteContent
+                            break
+                        }
+                    }
+                }
+                
+                // Determine which exercises belong to which day based on workout day configurations
+                // We'll need to check against WorkoutConfigManager, but for now, use heuristics
+                // Common exercise patterns for each day type
+                let legDayExercises = ["Squat", "Leg Press", "Lunge", "Calf", "Hamstring", "Quad", "Bulgarian", "RDL", "Extension", "Curl"]
+                let pushDayExercises = ["Bench", "Press", "Push", "Tricep", "Shoulder", "Dips", "Incline"]
+                let pullDayExercises = ["Pull", "Row", "Lat", "Curl", "Back", "Chin"]
+                _ = ["Achilles", "Calf", "Rehab"]  // achillesExercises - used in pattern matching below
+                
+                var exercisesByDay: [String: [String: [[String: Any]]]] = [:]
+                
+                for (exerciseName, sets) in exercises {
+                    var assigned = false
+                    
+                    // Check for Achilles rehab exercises first
+                    if exerciseName.lowercased().contains("achilles") {
+                        if exerciseName.lowercased().contains("light") {
+                            if exercisesByDay["Achilles Rehab Light"] == nil {
+                                exercisesByDay["Achilles Rehab Light"] = [:]
+                            }
+                            exercisesByDay["Achilles Rehab Light"]?[exerciseName] = sets
+                            assigned = true
+                        } else if exerciseName.lowercased().contains("heavy") {
+                            if exercisesByDay["Achilles Rehab Heavy"] == nil {
+                                exercisesByDay["Achilles Rehab Heavy"] = [:]
+                            }
+                            exercisesByDay["Achilles Rehab Heavy"]?[exerciseName] = sets
+                            assigned = true
+                        }
+                    }
+                    
+                    if !assigned {
+                        // Try to match to workout days
+                        let exerciseLower = exerciseName.lowercased()
+                        
+                        for dayName in dayNames {
+                            if dayName.lowercased().contains("leg") {
+                                if legDayExercises.contains(where: { exerciseLower.contains($0.lowercased()) }) {
+                                    if exercisesByDay[dayName] == nil {
+                                        exercisesByDay[dayName] = [:]
+                                    }
+                                    exercisesByDay[dayName]?[exerciseName] = sets
+                                    assigned = true
+                                    break
+                                }
+                            } else if dayName.lowercased().contains("push") {
+                                if pushDayExercises.contains(where: { exerciseLower.contains($0.lowercased()) }) {
+                                    if exercisesByDay[dayName] == nil {
+                                        exercisesByDay[dayName] = [:]
+                                    }
+                                    exercisesByDay[dayName]?[exerciseName] = sets
+                                    assigned = true
+                                    break
+                                }
+                            } else if dayName.lowercased().contains("pull") {
+                                if pullDayExercises.contains(where: { exerciseLower.contains($0.lowercased()) }) {
+                                    if exercisesByDay[dayName] == nil {
+                                        exercisesByDay[dayName] = [:]
+                                    }
+                                    exercisesByDay[dayName]?[exerciseName] = sets
+                                    assigned = true
+                                    break
+                                }
+                            }
+                        }
+                    }
+                    
+                    // If not assigned, assign to first matching day or first day
+                    if !assigned {
+                        let targetDay = dayNames.first ?? "Unknown"
+                        if exercisesByDay[targetDay] == nil {
+                            exercisesByDay[targetDay] = [:]
+                        }
+                        exercisesByDay[targetDay]?[exerciseName] = sets
+                    }
+                }
+                
+                // Create separate entries for each day
+                for dayName in dayNames {
+                    if let dayExercises = exercisesByDay[dayName], !dayExercises.isEmpty {
+                        let workoutData: [String: Any] = [
+                            "date": date,
+                            "exercises": dayExercises,
+                            "notes": notesByDay[dayName] ?? "",
+                            "day": dayName
+                        ]
+                        updatedWorkouts.append(workoutData)
+                    }
+                }
+                
+                // Also check for Achilles Rehab entries
+                if let achillesLight = exercisesByDay["Achilles Rehab Light"], !achillesLight.isEmpty {
+                    let workoutData: [String: Any] = [
+                        "date": date,
+                        "exercises": achillesLight,
+                        "notes": notesByDay["Achilles Rehab Light"] ?? "",
+                        "day": "Achilles Rehab Light"
+                    ]
+                    updatedWorkouts.append(workoutData)
+                }
+                
+                if let achillesHeavy = exercisesByDay["Achilles Rehab Heavy"], !achillesHeavy.isEmpty {
+                    let workoutData: [String: Any] = [
+                        "date": date,
+                        "exercises": achillesHeavy,
+                        "notes": notesByDay["Achilles Rehab Heavy"] ?? "",
+                        "day": "Achilles Rehab Heavy"
+                    ]
+                    updatedWorkouts.append(workoutData)
+                }
+            } else {
+                // Not combined, keep as is
+                updatedWorkouts.append(workout)
+            }
+        }
+        
+        // Sort by date
+        updatedWorkouts.sort { ($0["date"] as? TimeInterval ?? 0) < ($1["date"] as? TimeInterval ?? 0) }
+        
+        // Save updated workouts
+        if let jsonData = try? JSONSerialization.data(withJSONObject: updatedWorkouts) {
+            UserDefaults.standard.set(jsonData, forKey: "savedWorkouts")
+        }
+    }
 }
 
 
