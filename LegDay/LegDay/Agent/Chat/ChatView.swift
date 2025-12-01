@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ChatView: View {
     @EnvironmentObject var voiceAgent: VoiceAgentStore
+    @ObservedObject var dailyWorkout = DailyWorkoutSession.shared
     @State private var inputText: String = ""
     @State private var isStreaming: Bool = false
     @State private var streamingMessageId: UUID? = nil
@@ -10,6 +11,9 @@ struct ChatView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
+                // Superset dashboard at top
+                SupersetDashboardView(dailyWorkout: dailyWorkout)
+                
                 // Messages list
                 ScrollViewReader { proxy in
                     ScrollView {
@@ -178,6 +182,13 @@ struct ChatView: View {
         
         voiceAgent.intentRouter.setUndoSetHandler { exerciseName in
             print("Undo last set for: \(exerciseName ?? "any exercise")")
+        }
+        
+        // Superset handler - updates dashboard
+        voiceAgent.intentRouter.setSupersetHandler { [weak voiceAgent] exerciseA, exerciseB in
+            Task { @MainActor in
+                voiceAgent?.setSuperset(exerciseA: exerciseA, exerciseB: exerciseB)
+            }
         }
         
         // Wire up services

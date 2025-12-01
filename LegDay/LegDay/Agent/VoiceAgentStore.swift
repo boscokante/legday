@@ -38,6 +38,10 @@ class VoiceAgentStore: ObservableObject {
     @Published var audioLevel: Float = 0.0
     @Published var chatMessages: [ChatMessage] = []
     
+    // MARK: - Superset State
+    @Published var supersetExerciseA: String? = nil
+    @Published var supersetExerciseB: String? = nil
+    
     private var realtimeSession: OpenAIRealtimeSession?
     let intentRouter: IntentRouter
     private let historyProvider: HistorySummaryProvider
@@ -45,6 +49,7 @@ class VoiceAgentStore: ObservableObject {
     let chatClient: ChatClient
     
     private let chatStorageKey = "coachChatMessages"
+    private let supersetStorageKey = "coachSupersetExercises"
     
     init() {
         self.intentRouter = IntentRouter()
@@ -52,6 +57,37 @@ class VoiceAgentStore: ObservableObject {
         self.weightService = WeightRecommendationService()
         self.chatClient = ChatClient()
         loadChatMessages()
+        loadSupersetState()
+    }
+    
+    // MARK: - Superset Management
+    
+    func setSuperset(exerciseA: String?, exerciseB: String?) {
+        supersetExerciseA = exerciseA
+        supersetExerciseB = exerciseB
+        saveSupersetState()
+    }
+    
+    func clearSuperset() {
+        supersetExerciseA = nil
+        supersetExerciseB = nil
+        saveSupersetState()
+    }
+    
+    private func loadSupersetState() {
+        guard let data = UserDefaults.standard.data(forKey: supersetStorageKey),
+              let exercises = try? JSONDecoder().decode([String?].self, from: data),
+              exercises.count == 2 else {
+            return
+        }
+        supersetExerciseA = exercises[0]
+        supersetExerciseB = exercises[1]
+    }
+    
+    private func saveSupersetState() {
+        let exercises: [String?] = [supersetExerciseA, supersetExerciseB]
+        guard let data = try? JSONEncoder().encode(exercises) else { return }
+        UserDefaults.standard.set(data, forKey: supersetStorageKey)
     }
     
     // MARK: - Chat Persistence

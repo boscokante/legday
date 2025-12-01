@@ -193,6 +193,18 @@ struct ToolSchemas {
                 ],
                 required: []
             )
+        ),
+        ToolDefinition(
+            name: "set_superset",
+            description: "Sets the two exercises to display in the superset dashboard at the top of the chat. Use this when the user starts a workout or asks to do specific exercises. The dashboard shows current set, weight, reps, and a Done button for each exercise.",
+            parameters: JSONSchema(
+                type: "object",
+                properties: [
+                    "exercise_a": PropertySchema(type: "string", description: "Primary exercise name (e.g., 'Bench Press')", enumValues: nil),
+                    "exercise_b": PropertySchema(type: "string", description: "Secondary/alternate exercise to superset with (e.g., 'Standing Calf Raise')", enumValues: nil)
+                ],
+                required: []
+            )
         )
     ]
 }

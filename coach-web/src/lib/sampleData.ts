@@ -21,6 +21,8 @@ export type WorkoutPlan = {
   achilles: "heavy" | "light";
   notes: string;
   exercises: WorkoutExercise[];
+  primaryExercises: string[];  // Exercise names from primary day
+  secondaryExercises: string[]; // Exercise names from secondary day
 };
 
 // Calculate days since each workout type from real data
@@ -93,11 +95,12 @@ function buildTodayPlan(primaryDayId: string, secondaryDayId?: string): WorkoutP
   
   const achilles: "heavy" | "light" = secondaryDayId?.includes("light") ? "light" : "heavy";
   
+  // Track which exercises belong to which day
+  const primaryExercises = primaryDay?.exercises ?? [];
+  const secondaryExercises = secondaryDay?.exercises ?? [];
+  
   // Get exercises from config
-  const exerciseNames = [
-    ...(primaryDay?.exercises ?? []),
-    ...(secondaryDay?.exercises ?? []),
-  ];
+  const exerciseNames = [...primaryExercises, ...secondaryExercises];
   
   // Build exercises with sets from most recent completion
   const exercises: WorkoutExercise[] = [];
@@ -129,6 +132,8 @@ function buildTodayPlan(primaryDayId: string, secondaryDayId?: string): WorkoutP
     achilles,
     notes: `${focus} workout loaded from your history.`,
     exercises,
+    primaryExercises,
+    secondaryExercises,
   };
 }
 
@@ -152,9 +157,18 @@ function getRecommendedWorkout(): { primaryId: string; secondaryId?: string } {
   };
 }
 
-// Export computed values
-export const rotationStatus = calculateRotationStatus();
+// Export functions for client-side calculation (avoids hydration mismatch)
+export function getRotationStatus() {
+  return calculateRotationStatus();
+}
 
+export function getTodayPlan(): WorkoutPlan {
+  const recommended = getRecommendedWorkout();
+  return buildTodayPlan(recommended.primaryId, recommended.secondaryId);
+}
+
+// Legacy exports for backward compatibility (may cause hydration issues)
+export const rotationStatus = calculateRotationStatus();
 const recommended = getRecommendedWorkout();
 export const todayPlan: WorkoutPlan = buildTodayPlan(recommended.primaryId, recommended.secondaryId);
 

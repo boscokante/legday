@@ -18,3 +18,5 @@ DerivedData/
 
 # Secrets - API keys and sensitive config
 LegDay/LegDay/Agent/Config/Secrets.swift.specstory/
+.specstory/
+LegDay/LegDay/Agent/Config/Secrets.swift

@@ -17,6 +17,7 @@ class IntentRouter {
     private var exerciseSelectionHandler: ((String) -> Void)?
     private var logSetHandler: ((String, Int, Double, Double?, String?) -> Void)?
     private var undoSetHandler: ((String?) -> Void)?
+    private var supersetHandler: ((String?, String?) -> Void)?
     private var dailyWorkout: DailyWorkoutSession?
     private var weightService: WeightRecommendationService?
     private var historyProvider: HistorySummaryProvider?
@@ -35,6 +36,10 @@ class IntentRouter {
     
     func setUndoSetHandler(_ handler: @escaping (String?) -> Void) {
         self.undoSetHandler = handler
+    }
+    
+    func setSupersetHandler(_ handler: @escaping (String?, String?) -> Void) {
+        self.supersetHandler = handler
     }
     
     func setDailyWorkout(_ workout: DailyWorkoutSession) {
@@ -71,6 +76,9 @@ class IntentRouter {
             
         case "summarize_history":
             return try await handleSummarizeHistory(toolCall)
+            
+        case "set_superset":
+            return try await handleSetSuperset(toolCall)
             
         default:
             return ToolResult(success: false, message: "Unknown tool: \(toolCall.name)")
@@ -225,6 +233,35 @@ class IntentRouter {
                 "highlights": AnyCodable(summary.highlights)
             ]
         )
+    }
+    
+    private func handleSetSuperset(_ toolCall: ToolCall) async throws -> ToolResult {
+        let exerciseA = toolCall.getString("exercise_a")
+        let exerciseB = toolCall.getString("exercise_b")
+        
+        supersetHandler?(exerciseA, exerciseB)
+        
+        if let a = exerciseA, let b = exerciseB {
+            return ToolResult(
+                success: true,
+                message: "Set superset: \(a) alternating with \(b)",
+                data: [
+                    "exercise_a": AnyCodable(a),
+                    "exercise_b": AnyCodable(b)
+                ]
+            )
+        } else if let a = exerciseA {
+            return ToolResult(
+                success: true,
+                message: "Set single exercise focus: \(a)",
+                data: ["exercise_a": AnyCodable(a)]
+            )
+        } else {
+            return ToolResult(
+                success: true,
+                message: "Cleared superset dashboard"
+            )
+        }
     }
 }
 
